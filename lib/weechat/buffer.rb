@@ -152,6 +152,14 @@ module Weechat
       },
     }
 
+    # @private
+    MAPPINGS = {
+      :lines_hidden?       => :lines_hidden,
+      :time_for_each_line? => :time_for_each_line,
+      :text_search_exact?  => :text_search_exact,
+      :text_search_found?  => :text_search_found
+    }
+
     # This exception gets raised whenever one tries to read a property
     # that doesn't exist.
     #
@@ -497,6 +505,7 @@ module Weechat
 
     # Returns or sets properties.
     def method_missing(m, *args)
+      m = MAPPINGS[m] || m
       ms = m.to_s
       if args.empty?
         if valid_property?(ms)

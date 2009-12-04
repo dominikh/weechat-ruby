@@ -135,6 +135,7 @@ module Weechat
     PROCESSORS = {
       [:lines_hidden, :time_for_each_line, :text_search_exact,
        :text_search_found] => lambda {|v| Weechat.integer_to_bool(v) },
+      [:highlight_words, :highlight_tags] => lambda {|v| v == "-" ? [] : v.split(",") }
     }
 
     # The processing procedures that get applied to values before they

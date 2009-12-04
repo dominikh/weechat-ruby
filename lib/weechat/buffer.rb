@@ -68,14 +68,14 @@ module Weechat
   #
   # == List of gettable properties
   # * plugin
-  # * name
-  # * short_name
-  # * title
-  # * input
-  # * number
+  # * name         -- The name of the buffer
+  # * short_name   -- The short name of the buffer
+  # * title        -- The title of the buffer
+  # * input        -- The content of the input line of the buffer
+  # * number       -- The number (position) of the buffer
   # * num_displayed
   # * notify
-  # * lines_hidden
+  # * lines_hidden -- true if at least one line is hidden (filtered), otherwise false
   # * prefix_max_length
   # * time_for_each_line
   # * text_search
@@ -87,11 +87,11 @@ module Weechat
   # * unread          -- (Use {#update_marker} instead)
   # * display         -- (Use {#display} instead)
   # * number          -- (Use {#move} instead)
-  # * name            -- Sets the name of the buffer
-  # * short_name      -- Sets the short name of the buffer
+  # * name            -- The name of the buffer
+  # * short_name      -- The short name of the buffer
   # * type
   # * notify
-  # * title           -- Sets the title of the buffer
+  # * title           -- The title of the buffer
   # * time_for_each_line
   # * nicklist
   # * nicklist_case_sensitive

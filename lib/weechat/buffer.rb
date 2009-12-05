@@ -336,7 +336,7 @@ module Weechat
         }
         id = @callbacks.size - 1
         ptr = Weechat.buffer_new(name.to_s, "input_callback", id.to_s, "close_callback", id.to_s)
-        if ptr.empty
+        if ptr.empty?
           raise DuplicateBufferName(name.to_s)
         else
           @callbacks[-1][:ptr] = ptr

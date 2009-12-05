@@ -47,9 +47,7 @@ module Weechat
   end
 
   def self.pp(object, buffer = nil)
-    io = ""
-    PP.pp(object, io)
-    puts(io, buffer)
+    puts(object.pretty_inspect, buffer)
   end
 
   def self.integer_to_bool(int)

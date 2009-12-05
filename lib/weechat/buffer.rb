@@ -36,9 +36,12 @@ module Weechat
   # using {Weechat::Infolist.parse}
   #
   # === Using the abstractional layer
+  #
   # The proper way of getting and setting properties is by either
   # using {#get_property} and {#set_property} or by directly accessing
-  # attributes, as {#method_missing} allows us to.
+  # attributes. Note that when directly accessing them, one can
+  # use query methods, e.g. #lines_hidden? if the property returns
+  # true or false.
   #
   # The added benefit, except from cleaner code, is that the methods
   # return proper values. Instead of 0 and 1 it replies false and true
@@ -307,6 +310,21 @@ module Weechat
           Buffer.new(ptr)
         end
       end
+    end
+
+    # this defines all the getter methods for buffers
+    self.known_properties.each do |property|
+      define_method(property) { get_property(property) }
+    end
+
+    # this defined all the setter methods for buffers
+    SETTABLE_PROPERTIES.each do |property|
+      define_method(property + '=') {|v| set_property(property, v) }
+    end
+
+    # this adds a few aliases to make the interface more rubyish
+    MAPPINGS.each do |key, value|
+      alias_method key, value
     end
 
     def initialize(ptr)
@@ -596,18 +614,12 @@ module Weechat
       end
     end
 
-    # Returns or sets properties.
+    # method_missing returns buffer local variables.
+    #
+    # @return [String]
     def method_missing(m, *args)
-      m = MAPPINGS[m] || m
-      ms = m.to_s
-      if args.empty?
-        if valid_property?(ms)
-          get_property(ms)
-        else
-          super
-        end
-      elsif ms =~ /=$/ and settable_property?(ms[0..-2]) #valid_property?(ms[0..-2])
-        set_property(ms[0..-2], args.first)
+      if args.empty? && valid_property(m.to_s, :localvar)
+        get_property(m.to_s)
       else
         super
       end

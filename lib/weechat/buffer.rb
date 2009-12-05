@@ -220,6 +220,8 @@ module Weechat
       :text_search_found?  => :text_search_found,
       :show_times?         => :time_for_each_line,
       :show_times=         => :time_for_each_line=,
+      :position            => :number,
+      :position=           => :number=,
     }
 
     # This exception gets raised whenever one tries to read a property

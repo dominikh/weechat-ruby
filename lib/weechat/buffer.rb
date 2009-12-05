@@ -92,7 +92,7 @@ module Weechat
   # * input        -- (Use {Input#text} instead)
   # * number       -- The number (position) of the buffer
   # * num_displayed
-  # * notify
+  # * notify       -- The buffer's notify level. Can be :never, :highlights, :messages and :always
   # * lines_hidden -- true if at least one line is hidden (filtered), otherwise false
   # * prefix_max_length
   # * time_for_each_line
@@ -109,7 +109,7 @@ module Weechat
   # * name            -- The name of the buffer
   # * short_name      -- The short name of the buffer
   # * type
-  # * notify
+  # * notify          -- The buffer's notify level. Can be :never, :highlights, :messages and :everything
   # * title           -- The title of the buffer
   # * time_for_each_line -- Whether to display times or not (also called show_times)
   # * nicklist
@@ -119,6 +119,13 @@ module Weechat
   # * highlight_tags  -- Sets the tags to highlight in the buffer, expects an array
   # * input           -- (Use {Input#text=} instead)
   # * input_get_unknown_commands -- (Use {Input#get_unknown_commands=} instead)
+  #
+  # === Notify levels
+  #
+  # * :never      -- Don't notify at all
+  # * :highlights -- Only notify on highlights
+  # * :messages   -- Notify on highlights and messages
+  # * :everything -- Notify on everything
   class Buffer
     include Weechat::Pointer
     # @overload input
@@ -162,7 +169,19 @@ module Weechat
     TRANSFORMATIONS = {
       [:lines_hidden, :time_for_each_line, :text_search_exact,
        :text_search_found] => lambda {|v| Weechat.integer_to_bool(v) },
-      [:highlight_words, :highlight_tags] => lambda {|v| v == "-" ? [] : v.split(",") }
+      [:highlight_words, :highlight_tags] => lambda {|v| v == "-" ? [] : v.split(",") },
+      [:notify] => lambda {|v|
+        case v
+        when 0
+          :never
+        when 1
+          :highlights
+        when 2
+          :messages
+        when 3
+          :always
+        end
+      },
     }
 
     # The transformation procedures that get applied to values before they
@@ -176,6 +195,18 @@ module Weechat
       [:highlight_words, :highlight_tags] => lambda {|v|
         s = v.join(",")
         s.empty? ? "-" : s
+      },
+      [:notify] => lambda {|v|
+        case v
+        when :never
+          0
+        when :highlights
+          1
+        when :messages
+          2
+        when :always
+          3
+        end
       },
     }
 

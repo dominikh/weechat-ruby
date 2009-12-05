@@ -1,4 +1,3 @@
-require 'stringio'
 require 'pp'
 
 module Weechat
@@ -66,6 +65,7 @@ require 'weechat/pointer.rb'
 require 'weechat/hook.rb'
 require 'weechat/timer.rb'
 require 'weechat/command.rb'
+require 'weechat/input.rb'
 require 'weechat/buffer.rb'
 require 'weechat/server.rb'
 require 'weechat/infolist.rb'

@@ -66,12 +66,23 @@ module Weechat
   #     }
   #   )
   #
-  # == List of gettable properties
+  # == The input line
+  #
+  # While internally the input line is managed by two properties
+  # (`input` and `input_get_unknown_commands`), the Weechat Ruby
+  # abstraction uses one instance of the {Input} class per buffer (see
+  # {#input}). The content of the input line thus can be read using
+  # {Input#text} and set using {Input#text=} (or using the shorthand
+  # {#input=}). To turn on/off the receiving of unknown commands, use
+  # {Input#get_unknown_commands=}.
+  #
+  # == List of gettable properties using {#get_property}
+  #
   # * plugin
   # * name         -- The name of the buffer
   # * short_name   -- The short name of the buffer
   # * title        -- The title of the buffer
-  # * input        -- The content of the input line of the buffer
+  # * input        -- (Use {Input#text} instead)
   # * number       -- The number (position) of the buffer
   # * num_displayed
   # * notify
@@ -98,10 +109,18 @@ module Weechat
   # * nicklist_display_groups
   # * highlight_words -- Sets the words to highlight in the buffer, expects an array
   # * highlight_tags  -- Sets the tags to highlight in the buffer, expects an array
-  # * input           -- Sets the input line of the buffer
-  # * input_get_unknown_commands
+  # * input           -- (Use {Input#text=} instead)
+  # * input_get_unknown_commands -- (Use {Input#get_unknown_commands=} instead)
   class Buffer
     include Weechat::Pointer
+    # @overload input
+    #   @return [Weechat::Input]
+    # @overload input=(val)
+    #   Sets the content of the input line.
+    #
+    #   @return [void]
+    #   @see Input#text=
+    attr_accessor :input
 
     @callbacks = []
 
@@ -273,6 +292,15 @@ module Weechat
           Buffer.new(ptr)
         end
       end
+    end
+
+    def initialize(ptr)
+      super
+      @input = Weechat::Input.new(self)
+    end
+
+    def input=(val)
+      @input.text=(val)
     end
 
     # Displays the buffer in the current window.

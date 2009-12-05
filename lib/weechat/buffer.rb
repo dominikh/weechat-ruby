@@ -11,12 +11,14 @@ module Weechat
   # == Accessing properties
   # === The lowest level methods
   # ==== With fail checking
+  #
   # To get the raw data as returned by the Weechat API, but still
   # applying fail checks, one uses {#get_string_property},
   # {#get_integer_property} and {#get_infolist_property}. Values will
-  #   my_buffer.get_string_property("name") # => "some name"
-  #   my_buffer.get_string_property("foo")  # => Weechat::Buffer::UnknownProperty: foo
   # be returned as is, without any transformations.
+  #   my_buffer.get_string_property("name")          # => "some name"
+  #   my_buffer.get_integer_property("lines_hidden") # => 1
+  #   my_buffer.get_string_property("foo")           # => Weechat::Buffer::UnknownProperty: foo
   #
   # To set properties, while still applying fail checks, one uses
   # {#set_string_property} (since each value, also numbers, will be
@@ -26,6 +28,7 @@ module Weechat
   #
   #
   # === Without fail checking
+  #
   # This is the lowest possible way of accessing properties, since
   # these methods will just call out to the API directly. These
   # methods are {#get_string}, {#get_integer} and {#set}. There is no
@@ -42,9 +45,9 @@ module Weechat
   # (where applicable) and also allows those when setting values.
   # Lists will be represented as arrays, while the low level API would
   # return a comma delimited list.
-  #   my_buffer.name # => "some name"
-  #   my_buffer.time_for_each_line # => false
-  #   my_buffer.time_for_each_line = true
+  #   my_buffer.name          # => "some name"
+  #   my_buffer.lines_hidden? # => false
+  #   my_buffer.lines_hidden = true
   #
   # WeeChat also uses the setter API for a few operations like
   # updating the read marker or switching to another buffer. While
@@ -54,6 +57,7 @@ module Weechat
   #   another_buffer.show
   #
   # == Creating new buffers
+  #
   # Using {Buffer.create}, one can also create new buffers which even
   # respond to input and closing using hooks (procs or methods or
   # anything that responds to #call).
@@ -93,7 +97,8 @@ module Weechat
   # * text_search_exact
   # * text_search_found
   #
-  # == List of settable properties
+  # == List of settable properties using {#set_property}
+  #
   # * hotlist
   # * unread          -- (Use {#update_marker} instead)
   # * display         -- (Use {#display} instead)
@@ -103,7 +108,7 @@ module Weechat
   # * type
   # * notify
   # * title           -- The title of the buffer
-  # * time_for_each_line
+  # * time_for_each_line -- Whether to display times or not (also called show_times)
   # * nicklist
   # * nicklist_case_sensitive
   # * nicklist_display_groups
@@ -176,7 +181,9 @@ module Weechat
       :lines_hidden?       => :lines_hidden,
       :time_for_each_line? => :time_for_each_line,
       :text_search_exact?  => :text_search_exact,
-      :text_search_found?  => :text_search_found
+      :text_search_found?  => :text_search_found,
+      :show_times?         => :time_for_each_line,
+      :show_times=         => :time_for_each_line=,
     }
 
     # This exception gets raised whenever one tries to read a property
@@ -205,6 +212,7 @@ module Weechat
         KNOWN_INTEGER_PROPERTIES + KNOWN_STRING_PROPERTIES
       end
 
+      # @return [Buffer]
       # @see #initialize
       def from_ptr(ptr)
         self.new(ptr)
@@ -224,9 +232,11 @@ module Weechat
 
       # This method manages all input callbacks, resolving the
       # callback to use by an ID which gets supplied by
-      # {Weechat::Helper#input_callback}.
+      # {Weechat::Helper#input_callback}. This shouldn't be called
+      # directly by the user.
       #
-      # @see #call_close_callback
+      # @return [void]
+      # @see .call_close_callback
       # @private
       def call_input_callback(id, buffer, input)
         buffer = Buffer.new(buffer)
@@ -236,9 +246,11 @@ module Weechat
 
       # This method manages all close callbacks, resolving the
       # callback to use by an ID which gets supplied by
-      # {Weechat::Helper#close_callback}.
+      # {Weechat::Helper#close_callback}. This shouldn't be called
+      # directly by the user.
       #
-      # @see #call_input_callback
+      # @return [void]
+      # @see .call_input_callback
       # @private
       def call_close_callback(id, buffer)
         buffer = Buffer.new(buffer)
@@ -249,7 +261,9 @@ module Weechat
       # Returns all callbacks
       #
       # @return [Array<Hash{Symbol => String, #call}>] An array of hashes containing
-      #   the callbacks and the pointer of the buffer to which the callbacks are assigned to
+      #   the callbacks and pointers of the buffers to which the callbacks are assigned to
+      # @see #input_callback
+      # @see #close_callback
       def callbacks
         @callbacks
       end
@@ -278,6 +292,7 @@ module Weechat
       #     }
       #   )
       # @return [Buffer] The new buffer
+      # @raise [DuplicateBufferName] In case a buffer with that name already exists
       def create(name, input_callback, close_callback)
         @callbacks << {
           :input_callback => input_callback,
@@ -307,6 +322,7 @@ module Weechat
     #
     # @param [Boolean] auto If set to true, the read marker of the currently visible
     #   buffer won't be reset
+    # @return [void]
     def display(auto = false)
       auto = auto ? "auto" : 1
       set_property("display", auto)
@@ -362,6 +378,8 @@ module Weechat
     #
     # Note: After a buffer has been closed, it shouldn't be used anymore as
     # that might lead to segfaults.
+    #
+    # @return [void]
     def close
       # TODO add check if a buffer is closed, to all methods
       Weechat.buffer_close(@ptr)
@@ -369,18 +387,25 @@ module Weechat
     end
 
     # Moves the buffer.
+    #
+    # @param [Number] move The position to move the buffer to
+    # @return [Number] The position the buffer was moved to
     def move(n)
       self.number = (n)
     end
     alias_method :move_to, :move
 
     # Moves the read marker to the bottom
+    #
+    # @return [void]
     def update_marker
       self.unread = true
     end
     alias_method :update_read_marker, :update_marker
 
     # Clears the buffer.
+    #
+    # @return [void]
     def clear
       Weechat.buffer_clear(@ptr)
     end
@@ -388,6 +413,7 @@ module Weechat
     # Returns all properties (except from localvars) of the buffer.
     #
     # @return [Hash{Symbol => Object}] The properties
+    # @see #get_property
     def to_h
       properties = {}
       Weechat::Infolist.parse("buffer", @ptr).first.each do |key, value|
@@ -402,6 +428,8 @@ module Weechat
     # Checks if a property can be set.
     #
     # @return [Boolean]
+    # @see #valid_property?
+    # @see #set_property
     def settable_property?(property)
       property = property.to_s
       SETTABLE_PROPERTIES.include?(property)
@@ -411,6 +439,9 @@ module Weechat
     # before setting it. This means that e.g. true and false will be turned into 1 and 0.
     #
     # @raise [UnsettableProperty]
+    # @return [String, Integer] The value after if has been transformed
+    # @see #set_string_property
+    # @see #set
     def set_property(property, v)
       property = property.to_s
       raise UnsettableProperty.new(property) unless settable_property?(property)
@@ -423,8 +454,14 @@ module Weechat
       end
 
       set(property, v)
+      v
     end
 
+    # Sets a string property on the buffer, not applying any transformations.
+    #
+    # @return [String] The value
+    # @see #set_property
+    # @see #set
     def set_string_property(property, v)
       property = property.to_s
       raise UnsettableProperty.new(property) unless settable_property?(property)
@@ -432,6 +469,10 @@ module Weechat
     end
 
     # Sets a buffer property, not doing any checks or converions whatsoever.
+    #
+    # @return [void]
+    # @see #set_property
+    # @see #set_string_property
     def set(property, value)
       Weechat.buffer_set(@ptr, property.to_s, value.to_s)
     end
@@ -441,6 +482,10 @@ module Weechat
     #
     # @raise [UnknownProperty]
     # @return [String, Number, Boolean]
+    # @see #get_integer_property
+    # @see #get_string_property
+    # @see #get_infolist_property
+    # @see #set_property
     def get_property(property)
       property = property.to_s
       if KNOWN_INTEGER_PROPERTIES.include?(property)
@@ -466,13 +511,19 @@ module Weechat
     #
     # @raise [UnknownProperty]
     # @return [Number]
+    # @see #get_integer
     # @see #get_property
+    # @see #get_string_property
+    # @see #get_infolist_property
     def get_integer_property(property)
       property = property.to_s
       raise UnknownProperty.new(property) unless valid_property?(property, :integer)
       get_integer(property)
     end
 
+    # @see #get_integer_property
+    # @see #get_string
+    # @see #get_property
     def get_integer(property)
       Weechat.buffer_get_integer(@ptr, property.to_s).to_i
     end
@@ -482,13 +533,23 @@ module Weechat
     #
     # @raise [UnknownProperty]
     # @return [String]
+    # @see #get_string
     # @see #get_property
+    # @see #get_integer_property
+    # @see #set_string_property
     def get_string_property(property)
       property = property.to_s
       raise UnknownProperty.new(property) unless valid_property?(property, :string)
       get_string(property)
     end
 
+    # Returns a string property, not doing any checks.
+    #
+    # @return [String]
+    # @see #get_string_property
+    # @see #get_property
+    # @see #get_integer
+    # @see #set_string_property
     def get_string(property)
       Weechat.buffer_get_string(@ptr, property.to_s)
     end
@@ -499,19 +560,23 @@ module Weechat
     # @raise [UnknownProperty]
     # @return [String]
     # @see #get_property
+    # @see #get_string_property
+    # @see #get_integer_property
     def get_infolist_property(property)
       property = property.to_s
       raise UnknownProperty.new(property) unless valid_property?(property, :infolist)
       Weechat::Infolist.parse("buffer", @ptr).first[property.to_sym]
     end
 
-    # Checks if a valid is property. That is, if get_(integer|string|infolist)_property are
+    # Checks if a property is valid. That is, if get_(integer|string|infolist)_property are
     # able to return a value.
     #
     # @param [#to_s] property The name of the property
     # @param [Symbol] type The type of properties to check for.
     #   Can be one of :all, :string, :integer, :localvar or :infolist
     # @return [Boolean]
+    # @see #settable_property?
+    # @see #get_property
     def valid_property?(property, type = :all)
       property = property.to_s
       case type
@@ -551,6 +616,8 @@ module Weechat
     # The input callback assigned to the buffer.
     #
     # @return [#call]
+    # @see #close_callback
+    # @see .call_input_callback
     def input_callback
       self.class.callbacks.find {|c| c.ptr == @ptr}[:input_callback]
     end
@@ -558,11 +625,15 @@ module Weechat
     # The close callback assigned to the buffer.
     #
     # @return [#call]
+    # @see #input_callback
+    # @see .call_close_callback
     def close_callback
       self.class.callbacks.find {|c| c.ptr == @ptr}[:close_callback]
     end
 
     # Writes to the buffer.
+    #
+    # @return [void]
     def print(text)
       Weechat.puts(text, @ptr)
     end
@@ -572,6 +643,7 @@ module Weechat
     #
     # @param [Boolean] strip_colors Whether to strip out all color codes
     # @return [Array<String>] The lines
+    # @see #text
     def lines(strip_colors = false)
       lines = []
       Weechat::Infolist.parse("buffer_lines", @ptr).each do |line|
@@ -596,6 +668,8 @@ module Weechat
     alias_method :content, :text
 
     # Returns the number of lines in the buffer.
+    #
+    # @return [Number] The number of lines in the buffer
     def size
       # TODO check if there is a property for that
       Weechat::Infolist.parse("buffer_lines", @ptr).size

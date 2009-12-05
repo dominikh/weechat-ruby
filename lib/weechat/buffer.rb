@@ -546,6 +546,9 @@ module Weechat
       get_integer(property)
     end
 
+    # Returns an integer property, not doing any checks.
+    #
+    # @return [Number]
     # @see #get_integer_property
     # @see #get_string
     # @see #get_property

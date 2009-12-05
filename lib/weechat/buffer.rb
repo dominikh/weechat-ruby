@@ -95,7 +95,7 @@ module Weechat
   # * notify       -- The buffer's notify level. Can be :never, :highlights, :messages and :always
   # * lines_hidden -- true if at least one line is hidden (filtered), otherwise false
   # * prefix_max_length
-  # * time_for_each_line
+  # * time_for_each_line -- true if timestamps are shown, false otherwise (also called show_times?)
   # * text_search
   # * text_search_exact
   # * text_search_found
@@ -126,6 +126,8 @@ module Weechat
   # * :highlights -- Only notify on highlights
   # * :messages   -- Notify on highlights and messages
   # * :everything -- Notify on everything
+  #
+  # @see http://www.weechat.org/files/doc/stable/weechat_plugin_api.en.html#buffers The WeeChat Buffer API
   class Buffer
     include Weechat::Pointer
     # @overload input

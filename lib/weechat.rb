@@ -40,6 +40,7 @@ module Weechat
                buffer
              end
     Weechat.print(buffer.to_s, text.to_s)
+    nil # to mimic Kernel::puts
   end
 
   def self.p(object, buffer = nil)

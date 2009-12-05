@@ -369,11 +369,14 @@ module Weechat
     # Note: If the given command does not start with a slash, one will be added.
     #
     # @param [Array<String>] *parts All parts of the command to send
+    # @return [String] The whole command as sent to the buffer
     # @example
     #   my_buffer.command("/whois", "dominikh")
     def command(*parts)
       parts[0][0,0] = '/' unless parts[0][0..0] == '/'
-      Weechat.exec(parts.join(" "), self)
+      line = parts.join(" ")
+      Weechat.exec(line, self)
+      line
     end
     alias_method :send_command, :command
     alias_method :exec, :command
@@ -385,9 +388,12 @@ module Weechat
     # Note: this method will automatically escape a leading slash, if present.
     #
     # @param [Array<String>] *text All parts of the text to send
+    # @return [String] The whole string as sent to the buffer
     def send(*text)
       text[0][0,0] = '/' if text[0][0..0] == '/'
-      command(*text.join(" "))
+      line = text.join(" ")
+      command(line)
+      line
     end
     alias_method :privmsg, :send
     alias_method :say, :send
@@ -488,11 +494,12 @@ module Weechat
 
     # Sets a buffer property, not doing any checks or converions whatsoever.
     #
-    # @return [void]
+    # @return [Object] The value
     # @see #set_property
     # @see #set_string_property
     def set(property, value)
       Weechat.buffer_set(@ptr, property.to_s, value.to_s)
+      value
     end
 
     # Get a property. Transformations, if appropriate, will be applied to the value

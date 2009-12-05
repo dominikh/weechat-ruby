@@ -14,9 +14,9 @@ module Weechat
   # To get the raw data as returned by the Weechat API, but still
   # applying fail checks, one uses {#get_string_property},
   # {#get_integer_property} and {#get_infolist_property}. Values will
-  # be returned as is, without any processing.
   #   my_buffer.get_string_property("name") # => "some name"
   #   my_buffer.get_string_property("foo")  # => Weechat::Buffer::UnknownProperty: foo
+  # be returned as is, without any transformations.
   #
   # To set properties, while still applying fail checks, one uses
   # {#set_string_property} (since each value, also numbers, will be
@@ -128,21 +128,21 @@ module Weechat
     # @todo key_bind_xxx
     # @todo key_unbind_xxx
 
-    # The processing procedures that get applied to values after
+    # The transformation procedures that get applied to values after
     # they've been received using {#get_property}.
     #
     # @private
-    PROCESSORS = {
+    TRANSFORMATIONS = {
       [:lines_hidden, :time_for_each_line, :text_search_exact,
        :text_search_found] => lambda {|v| Weechat.integer_to_bool(v) },
       [:highlight_words, :highlight_tags] => lambda {|v| v == "-" ? [] : v.split(",") }
     }
 
-    # The processing procedures that get applied to values before they
+    # The transformation procedures that get applied to values before they
     # are set by {#set_property}.
     #
     # @private
-    RPROCESSORS = {
+    RTRANSFORMATIONS = {
       [:lines_hidden, :time_for_each_line, :text_search_exact,
        :text_search_found] => lambda {|v| Weechat.bool_to_integer(v) },
       [:unread] => lambda {|v| !v ? nil : 1},
@@ -379,7 +379,7 @@ module Weechat
       SETTABLE_PROPERTIES.include?(property)
     end
 
-    # Sets a property. Processors, if appropriate, will be applied to the value
+    # Sets a property. Transformations, if appropriate, will be applied to the value
     # before setting it. This means that e.g. true and false will be turned into 1 and 0.
     #
     # @raise [UnsettableProperty]
@@ -387,7 +387,7 @@ module Weechat
       property = property.to_s
       raise UnsettableProperty.new(property) unless settable_property?(property)
 
-      RPROCESSORS.each do |key, value|
+      RTRANSFORMATIONS.each do |key, value|
         if key.include?(property.to_sym)
           v = value.call(v)
           break
@@ -408,7 +408,7 @@ module Weechat
       Weechat.buffer_set(@ptr, property.to_s, value.to_s)
     end
 
-    # Get a property. Processors, if appropriate, will be applied to the value
+    # Get a property. Transformations, if appropriate, will be applied to the value
     # before returning it. This means that e.g. 0 and 1 might be turned into false and true.
     #
     # @raise [UnknownProperty]
@@ -425,7 +425,7 @@ module Weechat
         raise UnknownProperty.new(property)
       end
 
-      PROCESSORS.each do |key, value|
+      TRANSFORMATIONS.each do |key, value|
         if key.include?(property.to_sym)
           v = value.call(v)
           break

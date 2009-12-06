@@ -522,13 +522,7 @@ module Weechat
     def set_property(property, v)
       property = property.to_s
       raise UnsettableProperty.new(property) unless settable_property?(property)
-
-      RTRANSFORMATIONS.each do |key, value|
-        if key.include?(property.to_sym)
-          v = value.call(v)
-          break
-        end
-      end
+      v = Utilities.apply_transformation(property, v, RTRANSFORMATIONS)
 
       set(property, v)
       v
@@ -576,13 +570,7 @@ module Weechat
         raise UnknownProperty.new(property)
       end
 
-      TRANSFORMATIONS.each do |key, value|
-        if key.include?(property.to_sym)
-          v = value.call(v)
-          break
-        end
-      end
-      return v
+      return Utilities.apply_transformation(property, v, TRANSFORMATIONS)
     end
 
     # Returns an integer property.

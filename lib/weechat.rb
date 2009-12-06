@@ -60,6 +60,7 @@ module Weechat
   end
 end
 
+require 'weechat/utilities.rb'
 require 'weechat/pointer.rb'
 require 'weechat/hook.rb'
 require 'weechat/timer.rb'

@@ -771,6 +771,10 @@ module Weechat
     end
     alias_method :count, :size
     alias_method :length, :size
+
+    def inspect
+      sprintf "#<%s:0x%x @ptr=%p>", self.class, object_id << 1, @ptr
+    end
   end
 
   # The core buffer

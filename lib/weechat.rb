@@ -60,6 +60,7 @@ module Weechat
   end
 end
 
+require 'weechat/property.rb'
 require 'weechat/properties.rb'
 require 'weechat/exceptions.rb'
 require 'weechat/utilities.rb'

@@ -46,7 +46,7 @@ module Weechat
 
         # this defined all the setter methods
         @settable_properties.each do |property|
-          define_method(property + '=') {|v| set_property(property, v) }
+          define_method(property + '=') {|v| set_property(property, v, true) }
         end
 
         # this adds a few aliases to make interfaces more rubyish
@@ -56,6 +56,10 @@ module Weechat
 
         INSTANCE_METHODS.alias_methods(@type)
         include INSTANCE_METHODS
+      end
+
+      def apply_transformation(property, value)
+        Utilities.apply_transformation(property, value, @transformations)
       end
     end
 
@@ -70,6 +74,12 @@ module Weechat
       # @see #get_infolist_property
       # @see #set_property
       def get_property(property)
+        raise Exception::UnknownProperty.new(property) unless valid_property?(property)
+        Property.new(self, property)
+      end
+
+      # @private
+      def __get_property(property)
         property = property.to_s
         if valid_property?(property, :integer)
           v = get_integer_property(property)
@@ -81,7 +91,7 @@ module Weechat
           raise Exception::UnknownProperty.new(property)
         end
 
-        return Utilities.apply_transformation(property, v, self.class.transformations)
+        return self.class.apply_transformation(property, v)
       end
 
       # Returns an integer property.
@@ -141,9 +151,10 @@ module Weechat
       # @see #get_string_property
       # @see #get_integer_property
       def get_infolist_property(property)
-        property = property.to_s
-        raise Exception::UnknownProperty.new(property) unless valid_property?(property, :infolist)
-        Weechat::Infolist.parse(self.class.type, @ptr).first[property.to_sym]
+        property = property.to_sym
+        values = Weechat::Infolist.parse(self.class.type, @ptr).first
+        raise Exception::UnknownProperty.new(property.to_s) unless values[property]
+        values[property]
       end
 
       # Checks if a property can be set.
@@ -166,12 +177,19 @@ module Weechat
       # @return [String, Integer] The value after if has been transformed
       # @see #set_string_property
       # @see #set
-      def set_property(property, v)
+      def set_property(property, v, freeze = false)
         property = property.to_s
         raise Exception::UnsettableProperty.new(property) unless settable_property?(property)
         v = Utilities.apply_transformation(property, v, self.class.rtransformations)
 
         set(property, v)
+        if freeze
+          Property.properties.each do |prop|
+            if prop[0..1] == [@ptr, property]
+              prop[2].__freeze__
+            end
+          end
+        end
       end
 
       # Sets a string property, not applying any transformations.

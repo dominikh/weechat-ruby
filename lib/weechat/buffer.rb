@@ -163,8 +163,6 @@ module Weechat
     highlight_words highlight_tags input input_get_unknown_commands).freeze
     # @todo localvar_set_xxx
     # @todo localvar_del_xxx
-    # @todo key_bind_xxx
-    # @todo key_unbind_xxx
 
     NOTIFY_LEVELS = [:never, :highlights, :messages, :always]
 
@@ -347,6 +345,7 @@ module Weechat
     def initialize(ptr)
       super
       @input = Weechat::Input.new(self)
+      @keybinds = {}
     end
 
     def input=(val)
@@ -540,6 +539,40 @@ module Weechat
 
     def inspect
       sprintf "#<%s:0x%x @ptr=%p>", self.class, object_id << 1, @ptr
+    end
+
+    # Bind keys to a command.
+    #
+    # @param [Array<String>] keys An array of keys which will be used to build a keychain
+    # @param [String, Command] command The command to execute when the keys are being pressed
+    # @return [String] The keychain
+    # @see #unbind_keys
+    def bind_keys(keys, command)
+      keychain = keys.join("-")
+      if command.is_a? Command
+        command = command.command
+      end
+      set("key_bind_#{keychain}", command)
+      @keybinds[keys] = command
+      keychain
+    end
+
+    # Unbind keys.
+    #
+    # @param[Array<String>] keys An array of keys which will be used to build a keychain
+    # @return [String] The command that was assigned to the key bind
+    # @see #bind_keys
+    def unbind_keys(keys)
+      keychain = keys.join("-")
+      set("key_unbind_#{keychain}")
+      @keybinds.delete keys
+    end
+
+    # Returns all key binds
+    #
+    # @return [Hash{String => String}] A hash with keychain => command assignments
+    def key_binds
+      @keybinds
     end
   end
 

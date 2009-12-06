@@ -51,7 +51,16 @@ module Weechat
 
         # this adds a few aliases to make interfaces more rubyish
         @mappings.each do |key, value|
-          alias_method key, value
+          if respond_to?(value)
+            # it is a string/integer property
+            alias_method key, value
+          else
+            # it is an infolist property
+            define_method(key) do |*args|
+              __send__(value, *args)
+            end
+          end
+
         end
 
         INSTANCE_METHODS.alias_methods(@type)

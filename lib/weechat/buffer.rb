@@ -688,13 +688,21 @@ module Weechat
       end
     end
 
+    # Returns the callbacks assigned to the buffer.
+    #
+    # @return (see Weechat::Buffer.callbacks)
+    # @private
+    def callbacks
+      self.class.callbacks.find {|c| c.ptr == @ptr}
+    end
+
     # The input callback assigned to the buffer.
     #
     # @return [#call]
     # @see #close_callback
     # @see .call_input_callback
     def input_callback
-      self.class.callbacks.find {|c| c.ptr == @ptr}[:input_callback]
+      callbacks[:input_callback]
     end
 
     # The close callback assigned to the buffer.
@@ -703,7 +711,7 @@ module Weechat
     # @see #input_callback
     # @see .call_close_callback
     def close_callback
-      self.class.callbacks.find {|c| c.ptr == @ptr}[:close_callback]
+      callbacks[:close_callback]
     end
 
     # Writes to the buffer.

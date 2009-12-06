@@ -3,8 +3,13 @@ module Weechat
     def self.apply_transformation(property, value, transformations)
       transformation = transformations.find {|properties, transformation|
         properties.include?(property.to_sym)
-      }[1]
-      transformation.call(value)
+      }
+
+      if transformation
+        transformation[1].call(value)
+      else
+        value
+      end
     end
   end
 end

@@ -669,7 +669,7 @@ module Weechat
     #
     # @return [String]
     def method_missing(m, *args)
-      if args.empty? && valid_property(m.to_s, :localvar)
+      if args.empty? && valid_property?(m.to_s, :localvar)
         get_property(m.to_s)
       else
         super

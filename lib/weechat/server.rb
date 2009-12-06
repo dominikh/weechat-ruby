@@ -72,8 +72,9 @@ module Weechat
 
       def method_missing(m, *args)
         m = MAPPINGS[m] || m
-        if data.has_key?(m) and args.size == 0
-          v = data[m]
+        properties = data
+        if properties.has_key?(m) and args.size == 0
+          v = properties[m]
           PROCESSORS.each do |key, value|
             if key.include?(m)
               v = value.call(v)

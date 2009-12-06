@@ -204,24 +204,6 @@ module Weechat
       :position=           => :number=,
     }
 
-    # This exception gets raised whenever one tries to read a property
-    # that doesn't exist.
-    #
-    # @see #get_property
-    class UnknownProperty < RuntimeError; end
-
-    # This exception gets raised whenever one tries to set a property
-    # that cannot be set.
-    #
-    # @see #set_property
-    class UnsettableProperty < RuntimeError; end
-
-    # This exception gets raised when one tries to create a buffer
-    # with the name of an already existing one.
-    #
-    # @see ::create
-    class DuplicateBufferName < RuntimeError; end
-
     class << self
       # Returns all known properties of buffers.
       #
@@ -348,7 +330,7 @@ module Weechat
       #     }
       #   )
       # @return [Buffer] The new buffer
-      # @raise [DuplicateBufferName] In case a buffer with that name already exists
+      # @raise [Exception::DuplicateBufferName] In case a buffer with that name already exists
       def create(name, input_callback, close_callback)
         @callbacks << {
           :input_callback => input_callback,
@@ -357,7 +339,7 @@ module Weechat
         id = @callbacks.size - 1
         ptr = Weechat.buffer_new(name.to_s, "input_callback", id.to_s, "close_callback", id.to_s)
         if ptr.empty?
-          raise DuplicateBufferName(name.to_s)
+          raise Exception::DuplicateBufferName(name.to_s)
         else
           @callbacks[-1][:ptr] = ptr
           Buffer.new(ptr)
@@ -515,13 +497,13 @@ module Weechat
     # Sets a property. Transformations, if appropriate, will be applied to the value
     # before setting it. This means that e.g. true and false will be turned into 1 and 0.
     #
-    # @raise [UnsettableProperty]
+    # @raise [Exception::UnsettableProperty]
     # @return [String, Integer] The value after if has been transformed
     # @see #set_string_property
     # @see #set
     def set_property(property, v)
       property = property.to_s
-      raise UnsettableProperty.new(property) unless settable_property?(property)
+      raise Exception::UnsettableProperty.new(property) unless settable_property?(property)
       v = Utilities.apply_transformation(property, v, RTRANSFORMATIONS)
 
       set(property, v)
@@ -530,12 +512,13 @@ module Weechat
 
     # Sets a string property on the buffer, not applying any transformations.
     #
+    # @raise [Exception::UnsettableProperty]
     # @return [String] The value
     # @see #set_property
     # @see #set
     def set_string_property(property, v)
       property = property.to_s
-      raise UnsettableProperty.new(property) unless settable_property?(property)
+      raise Exception::UnsettableProperty.new(property) unless settable_property?(property)
       set(property, v)
     end
 
@@ -552,7 +535,7 @@ module Weechat
     # Get a property. Transformations, if appropriate, will be applied to the value
     # before returning it. This means that e.g. 0 and 1 might be turned into false and true.
     #
-    # @raise [UnknownProperty]
+    # @raise [Exception::UnknownProperty]
     # @return [String, Number, Boolean]
     # @see #get_integer_property
     # @see #get_string_property
@@ -567,7 +550,7 @@ module Weechat
       elsif valid_property?(property, :infolist)
         v = get_infolist_property(property)
       else
-        raise UnknownProperty.new(property)
+        raise Exception::UnknownProperty.new(property)
       end
 
       return Utilities.apply_transformation(property, v, TRANSFORMATIONS)
@@ -575,7 +558,7 @@ module Weechat
 
     # Returns an integer property.
     #
-    # @raise [UnknownProperty]
+    # @raise [Exception::UnknownProperty]
     # @return [Number]
     # @see #get_integer
     # @see #get_property
@@ -583,7 +566,7 @@ module Weechat
     # @see #get_infolist_property
     def get_integer_property(property)
       property = property.to_s
-      raise UnknownProperty.new(property) unless valid_property?(property, :integer)
+      raise Exception::UnknownProperty.new(property) unless valid_property?(property, :integer)
       get_integer(property)
     end
 
@@ -600,7 +583,7 @@ module Weechat
 
     # Returns a string property.
     #
-    # @raise [UnknownProperty]
+    # @raise [Exception::UnknownProperty]
     # @return [String]
     # @see #get_string
     # @see #get_property
@@ -608,7 +591,7 @@ module Weechat
     # @see #set_string_property
     def get_string_property(property)
       property = property.to_s
-      raise UnknownProperty.new(property) unless valid_property?(property, :string)
+      raise Exception::UnknownProperty.new(property) unless valid_property?(property, :string)
       get_string(property)
     end
 
@@ -626,14 +609,14 @@ module Weechat
 
     # Returns a property obtained by an infolist.
     #
-    # @raise [UnknownProperty]
+    # @raise [Exception::UnknownProperty]
     # @return [String]
     # @see #get_property
     # @see #get_string_property
     # @see #get_integer_property
     def get_infolist_property(property)
       property = property.to_s
-      raise UnknownProperty.new(property) unless valid_property?(property, :infolist)
+      raise Exception::UnknownProperty.new(property) unless valid_property?(property, :infolist)
       Weechat::Infolist.parse("buffer", @ptr).first[property.to_sym]
     end
 

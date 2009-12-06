@@ -130,6 +130,8 @@ module Weechat
   # @see http://www.weechat.org/files/doc/stable/weechat_plugin_api.en.html#buffers The WeeChat Buffer API
   class Buffer
     include Weechat::Pointer
+    extend Weechat::Properties
+
     # @overload input
     #   @return [Weechat::Input]
     # @overload input=(val)
@@ -144,19 +146,19 @@ module Weechat
     # A list of all properties that can be retrieved using {#get_string_property}.
     #
     # @private
-    KNOWN_STRING_PROPERTIES  = %w(plugin name short_name title input).freeze
+    @known_string_properties  = %w(plugin name short_name title input).freeze
 
     # A list of all properties that can be retrieved using {#get_integer_property}.
     #
     # @private
-    KNOWN_INTEGER_PROPERTIES = %w(number num_displayed notify lines_hidden prefix_max_length
+    @known_integer_properties = %w(number num_displayed notify lines_hidden prefix_max_length
     time_for_each_line text_search text_search_exact
     text_search_found).freeze
 
     # A list of all properties that can be set using {#set_property}.
     #
     # @private
-    SETTABLE_PROPERTIES = %w(hotlist unread display number name short_name type notify
+    @settable_properties = %w(hotlist unread display number name short_name type notify
     title time_for_each_line nicklist nicklist_case_sensitive nicklist_display_groups
     highlight_words highlight_tags input input_get_unknown_commands).freeze
     # @todo localvar_set_xxx
@@ -170,7 +172,7 @@ module Weechat
     # they've been received using {#get_property}.
     #
     # @private
-    TRANSFORMATIONS = {
+    @transformations = {
       [:lines_hidden, :time_for_each_line, :text_search_exact,
        :text_search_found] => lambda {|v| Weechat.integer_to_bool(v) },
       [:highlight_words, :highlight_tags] => lambda {|v| v == "-" ? [] : v.split(",") },
@@ -181,7 +183,7 @@ module Weechat
     # are set by {#set_property}.
     #
     # @private
-    RTRANSFORMATIONS = {
+    @rtransformations = {
       [:lines_hidden, :time_for_each_line, :text_search_exact,
        :text_search_found] => lambda {|v| Weechat.bool_to_integer(v) },
       [:unread] => lambda {|v| !v ? nil : 1},
@@ -193,7 +195,7 @@ module Weechat
     }
 
     # @private
-    MAPPINGS = {
+    @mappings = {
       :lines_hidden?       => :lines_hidden,
       :time_for_each_line? => :time_for_each_line,
       :text_search_exact?  => :text_search_exact,
@@ -204,14 +206,9 @@ module Weechat
       :position=           => :number=,
     }
 
-    class << self
-      # Returns all known properties of buffers.
-      #
-      # @return [Array<Symbol>] The properties
-      def known_properties
-        KNOWN_INTEGER_PROPERTIES + KNOWN_STRING_PROPERTIES
-      end
+    init_properties
 
+    class << self
       # @return [Buffer]
       # @see #initialize
       def from_ptr(ptr)
@@ -347,21 +344,6 @@ module Weechat
       end
     end
 
-    # this defines all the getter methods for buffers
-    self.known_properties.each do |property|
-      define_method(property) { get_property(property) }
-    end
-
-    # this defined all the setter methods for buffers
-    SETTABLE_PROPERTIES.each do |property|
-      define_method(property + '=') {|v| set_property(property, v) }
-    end
-
-    # this adds a few aliases to make the interface more rubyish
-    MAPPINGS.each do |key, value|
-      alias_method key, value
-    end
-
     def initialize(ptr)
       super
       @input = Weechat::Input.new(self)
@@ -482,181 +464,6 @@ module Weechat
         properties[property.to_sym] = get_property(property)
       }
       properties
-    end
-
-    # Checks if a property can be set.
-    #
-    # @return [Boolean]
-    # @see #valid_property?
-    # @see #set_property
-    def settable_property?(property)
-      property = property.to_s
-      SETTABLE_PROPERTIES.include?(property)
-    end
-
-    # Sets a property. Transformations, if appropriate, will be applied to the value
-    # before setting it. This means that e.g. true and false will be turned into 1 and 0.
-    #
-    # @raise [Exception::UnsettableProperty]
-    # @return [String, Integer] The value after if has been transformed
-    # @see #set_string_property
-    # @see #set
-    def set_property(property, v)
-      property = property.to_s
-      raise Exception::UnsettableProperty.new(property) unless settable_property?(property)
-      v = Utilities.apply_transformation(property, v, RTRANSFORMATIONS)
-
-      set(property, v)
-      v
-    end
-
-    # Sets a string property on the buffer, not applying any transformations.
-    #
-    # @raise [Exception::UnsettableProperty]
-    # @return [String] The value
-    # @see #set_property
-    # @see #set
-    def set_string_property(property, v)
-      property = property.to_s
-      raise Exception::UnsettableProperty.new(property) unless settable_property?(property)
-      set(property, v)
-    end
-
-    # Sets a buffer property, not doing any checks or converions whatsoever.
-    #
-    # @return [Object] The value
-    # @see #set_property
-    # @see #set_string_property
-    def set(property, value)
-      Weechat.buffer_set(@ptr, property.to_s, value.to_s)
-      value
-    end
-
-    # Get a property. Transformations, if appropriate, will be applied to the value
-    # before returning it. This means that e.g. 0 and 1 might be turned into false and true.
-    #
-    # @raise [Exception::UnknownProperty]
-    # @return [String, Number, Boolean]
-    # @see #get_integer_property
-    # @see #get_string_property
-    # @see #get_infolist_property
-    # @see #set_property
-    def get_property(property)
-      property = property.to_s
-      if KNOWN_INTEGER_PROPERTIES.include?(property)
-        v = get_integer_property(property)
-      elsif KNOWN_STRING_PROPERTIES.include?(property) or valid_property?(property, :localvar)
-        v = get_string_property(property)
-      elsif valid_property?(property, :infolist)
-        v = get_infolist_property(property)
-      else
-        raise Exception::UnknownProperty.new(property)
-      end
-
-      return Utilities.apply_transformation(property, v, TRANSFORMATIONS)
-    end
-
-    # Returns an integer property.
-    #
-    # @raise [Exception::UnknownProperty]
-    # @return [Number]
-    # @see #get_integer
-    # @see #get_property
-    # @see #get_string_property
-    # @see #get_infolist_property
-    def get_integer_property(property)
-      property = property.to_s
-      raise Exception::UnknownProperty.new(property) unless valid_property?(property, :integer)
-      get_integer(property)
-    end
-
-    # Returns an integer property, not doing any checks.
-    #
-    # @return [Number]
-    # @see #get_integer_property
-    # @see #get_string
-    # @see #get_property
-    def get_integer(property)
-      Weechat.buffer_get_integer(@ptr, property.to_s).to_i
-    end
-    alias_method :buffer_get_integer, :get_integer
-
-    # Returns a string property.
-    #
-    # @raise [Exception::UnknownProperty]
-    # @return [String]
-    # @see #get_string
-    # @see #get_property
-    # @see #get_integer_property
-    # @see #set_string_property
-    def get_string_property(property)
-      property = property.to_s
-      raise Exception::UnknownProperty.new(property) unless valid_property?(property, :string)
-      get_string(property)
-    end
-
-    # Returns a string property, not doing any checks.
-    #
-    # @return [String]
-    # @see #get_string_property
-    # @see #get_property
-    # @see #get_integer
-    # @see #set_string_property
-    def get_string(property)
-      Weechat.buffer_get_string(@ptr, property.to_s)
-    end
-    alias_method :buffer_get_string, :get_string
-
-    # Returns a property obtained by an infolist.
-    #
-    # @raise [Exception::UnknownProperty]
-    # @return [String]
-    # @see #get_property
-    # @see #get_string_property
-    # @see #get_integer_property
-    def get_infolist_property(property)
-      property = property.to_s
-      raise Exception::UnknownProperty.new(property) unless valid_property?(property, :infolist)
-      Weechat::Infolist.parse("buffer", @ptr).first[property.to_sym]
-    end
-
-    # Checks if a property is valid. That is, if get_(integer|string|infolist)_property are
-    # able to return a value.
-    #
-    # @param [#to_s] property The name of the property
-    # @param [Symbol] type The type of properties to check for.
-    #   Can be one of :all, :string, :integer, :localvar or :infolist
-    # @return [Boolean]
-    # @see #settable_property?
-    # @see #get_property
-    def valid_property?(property, type = :all)
-      property = property.to_s
-      case type
-      when :all
-        valid_property?(property, :string) or
-          valid_property?(property, :integer) or
-          valid_property?(property, :localvar) or
-          valid_property?(property, :infolist)
-      when :string
-        KNOWN_STRING_PROPERTIES.include?(property) or valid_property?(property, :localvar)
-      when :integer
-        KNOWN_INTEGER_PROPERTIES.include?(property)
-      when :localvar
-        property =~ /^localvar_.+$/
-      when :infolist
-        Weechat::Infolist.parse("buffer", @ptr).first[property.to_sym]
-      end
-    end
-
-    # method_missing returns buffer local variables.
-    #
-    # @return [String]
-    def method_missing(m, *args)
-      if args.empty? && valid_property?(m.to_s, :localvar)
-        get_property(m.to_s)
-      else
-        super
-      end
     end
 
     # Returns the callbacks assigned to the buffer.

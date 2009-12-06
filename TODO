@@ -99,7 +99,7 @@ hook_infolist
 
 buffers:
 [x] buffer_new
-buffer_search
+[x] buffer_search
 [x] current_buffer
 [x] buffer_clear
 [x] buffer_close

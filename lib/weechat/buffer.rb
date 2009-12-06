@@ -268,6 +268,44 @@ module Weechat
       end
       alias_method :all, :buffers
 
+      # Finds a buffer by its name and its plugin.
+      #
+      # @param [String] name The name of the buffer to find
+      # @param [String] plugin The plugin of the buffer to find
+      # @return [Buffer, nil] An existing buffer or nil if non was found.
+      def find_by_name(name, plugin = "ruby")
+        ptr = Weechat.buffer_search(plugin, name)
+        if ptr == ""
+          nil
+        else
+          Buffer.new(ptr)
+        end
+      end
+      alias_method :find, :find_by_name
+
+      # Returns all buffers with a certain name
+      #
+      # @param [String, Regexp] pattern The name of the buffers to find or a regular expression
+      # @param [Hash{Symbol => Object}] properties A hash with property => value pairs, defining requirements
+      #   for the found buffers.
+      # @see .find_by_name
+      # @return [Array<Buffer>]
+      def search(pattern, properties={})
+        if pattern.is_a? String
+          pattern = Regexp.new("^#{pattern}$")
+        end
+
+        Weechat::Infolist.parse("buffer").select {|h|
+          h[:name] =~ pattern
+        }.map {|h|
+          Buffer.new(h[:pointer])
+        }.select {|b|
+          properties.all? {|key, value|
+            b.__send__(key) == value
+          }
+        }
+      end
+
       # This method manages all input callbacks, resolving the
       # callback to use by an ID which gets supplied by
       # {Weechat::Helper#input_callback}. This shouldn't be called

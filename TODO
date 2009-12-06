@@ -147,15 +147,15 @@ infolist_new_var_integer
 infolist_new_var_string
 infolist_new_var_pointer
 infolist_new_var_time
-infolist_get
-infolist_next
-infolist_prev
-infolist_fields
-infolist_integer
-infolist_string
-infolist_pointer
-infolist_time
-infolist_free
+[x] infolist_get
+[x] infolist_next
+[-] infolist_prev
+[x] infolist_fields
+[x] infolist_integer
+[x] infolist_string
+[x] infolist_pointer
+[x] infolist_time
+[x] infolist_free
 
 upgrade:
 upgrade_new

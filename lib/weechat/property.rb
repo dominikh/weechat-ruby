@@ -36,7 +36,14 @@ module Weechat
         @weechat_obj.set_property(@property, obj)
       end
 
-      @old_obj = obj.dup unless @frozen
+      unless @frozen
+        begin
+          @old_obj = obj.dup
+        rescue TypeError
+          @old_obj = obj
+        end
+      end
+      
       ret
     end
   end

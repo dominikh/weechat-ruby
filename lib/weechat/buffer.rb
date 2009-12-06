@@ -164,6 +164,8 @@ module Weechat
     # @todo key_bind_xxx
     # @todo key_unbind_xxx
 
+    NOTIFY_LEVELS = [:never, :highlights, :messages, :always]
+
     # The transformation procedures that get applied to values after
     # they've been received using {#get_property}.
     #
@@ -172,18 +174,7 @@ module Weechat
       [:lines_hidden, :time_for_each_line, :text_search_exact,
        :text_search_found] => lambda {|v| Weechat.integer_to_bool(v) },
       [:highlight_words, :highlight_tags] => lambda {|v| v == "-" ? [] : v.split(",") },
-      [:notify] => lambda {|v|
-        case v
-        when 0
-          :never
-        when 1
-          :highlights
-        when 2
-          :messages
-        when 3
-          :always
-        end
-      },
+      [:notify] => lambda {|v| NOTIFY_LEVELS[v] },
     }
 
     # The transformation procedures that get applied to values before they
@@ -198,18 +189,7 @@ module Weechat
         s = v.join(",")
         s.empty? ? "-" : s
       },
-      [:notify] => lambda {|v|
-        case v
-        when :never
-          0
-        when :highlights
-          1
-        when :messages
-          2
-        when :always
-          3
-        end
-      },
+      [:notify] => lambda {|v| NOTIFY_LEVELS.index(v) },
     }
 
     # @private

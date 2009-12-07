@@ -44,7 +44,7 @@ module Weechat
     #
     # @private
     @known_integer_properties = %w(win_x win_y win_width win_height win_width_pct
-    win_height_pct win_chat_x win_chat_y win_chat_width win_chat_height first_line_displayed
+    win_height_pct first_line_displayed
     scroll scroll_lines_after).freeze
 
     # A list of all properties that can be set using {#set_property}.
@@ -78,10 +78,6 @@ module Weechat
       :height => :win_height,
       :width_pct => :win_width_pct,
       :height_pct => :win_height_pct,
-      :chat_x => :win_chat_x,
-      :chat_y => :win_chat_y,
-      :chat_width => :win_chat_width,
-      :chat_height => :win_chat_height,
       :first_line_displayed? => :first_line_displayed,
       :scrolling? => :scroll,
       :scrolling_lines => :scroll_lines_after

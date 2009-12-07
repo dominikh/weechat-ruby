@@ -14,6 +14,10 @@ module Weechat
     # @see Window#set_property
     class UnsettableProperty < RuntimeError; end
 
+    # This exception gets raised whenever one tries to set a property,
+    # supplying a value not suiting it.
+    class InvalidPropertyValue < RuntimeError; end
+
     # This exception gets raised when one tries to create a buffer
     # with the name of an already existing one.
     #

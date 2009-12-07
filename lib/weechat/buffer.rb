@@ -189,7 +189,10 @@ module Weechat
         s = v.join(",")
         s.empty? ? "-" : s
       },
-      [:notify] => lambda {|v| NOTIFY_LEVELS.index(v) },
+      [:notify] => lambda {|v|
+        i = NOTIFY_LEVELS.index(v)
+        i or raise Exception::InvalidPropertyValue.new(v.to_s)
+      },
     }
 
     # @private

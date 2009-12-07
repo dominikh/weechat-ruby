@@ -28,9 +28,18 @@ module Weechat
         end
       end
 
+      attr_reader :window
+      protected :window
+
       def initialize(window)
         @window = window
       end
+
+      def ==(other)
+        @window == other.window
+      end
+      alias_method :eql?, "=="
+      alias_method :equal?, "=="
     end
     include Weechat::Pointer
     extend Weechat::Properties

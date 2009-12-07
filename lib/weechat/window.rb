@@ -1,5 +1,26 @@
 module Weechat
+  # == Gettable properties
+  #
+  # [x]                     X position of the window in the terminal
+  # [y]                     Y position of the window in the terminal
+  # [width]                 Width of the window
+  # [height]                Height of the window
+  # [width_pct]             Width relative to the one of the parent window (0..100%)
+  # [height_pct]            Height relative to the one of the parent window (0..100%)
+  # [first_line_displayed?] True if the first line of the displayed buffer is displayed on the screen
+  # [scrolling?]            True if the window is currently being scrolled
+  # [scrolling_lines]       Number of lines that are not being displayed (in the bottom direction)
+  #
+  # == The chat area
+  #
+  # See {Window::Chat}
   class Window
+    # == Gettable properties
+    #
+    # [x]      X position of the chat area
+    # [y]      Y position of the chat area
+    # [width]  Width of the chat area
+    # [height] Height of the chat area
     class Chat
       %w(x y width height).each do |prop|
         define_method(prop) do

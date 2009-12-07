@@ -541,6 +541,13 @@ module Weechat
     def key_binds
       @keybinds
     end
+
+    # Returns all windows that are displaying this buffer.
+    #
+    # @return [Array<Window>]
+    def windows
+      Window.all.select {|window| window.buffer == self }
+    end
   end
 
   # The core buffer

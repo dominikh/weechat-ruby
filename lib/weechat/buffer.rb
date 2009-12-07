@@ -123,7 +123,7 @@ module Weechat
     # @todo localvar_set_xxx
     # @todo localvar_del_xxx
 
-    NOTIFY_LEVELS = [:never, :highlights, :messages, :always]
+    NOTIFY_LEVELS = [:never, :highlights, :messages, :always].freeze
 
     # The transformation procedures that get applied to values after
     # they've been received using {#get_property}.
@@ -136,7 +136,7 @@ module Weechat
       [:notify] => lambda {|v| NOTIFY_LEVELS[v] },
       [:text_search] => lambda {|v| [:none, :backward, :foward][v] },
       [:type] => lambda {|v| [:formatted, :free][v]},
-    }
+    }.freeze
 
     # The transformation procedures that get applied to values before they
     # are set by {#set_property}.
@@ -159,7 +159,7 @@ module Weechat
         raise Exception::InvalidPropertyValue.new(v) if !["formatted", "free"].include?(v)
         v
       },
-    }
+    }.freeze
 
     # @private
     @mappings = {
@@ -172,7 +172,7 @@ module Weechat
       :position            => :number,
       :position=           => :number=,
       :active?             => :current_buffer,
-    }
+    }.freeze
 
     init_properties
 

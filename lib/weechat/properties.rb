@@ -1,6 +1,6 @@
 module Weechat
   module Properties
-    module CLASS_METHODS
+    module ClassMethods
       # Returns all known properties.
       #
       # @return [Array<Symbol>] The properties
@@ -63,8 +63,8 @@ module Weechat
 
         end
 
-        INSTANCE_METHODS.alias_methods(@type)
-        include INSTANCE_METHODS
+        InstanceMethods.alias_methods(@type)
+        include InstanceMethods
       end
 
       def apply_transformation(property, value)
@@ -72,7 +72,7 @@ module Weechat
       end
     end
 
-    module INSTANCE_METHODS
+    module InstanceMethods
       # Get a property. Transformations, if appropriate, will be applied to the value
       # before returning it. This means that e.g. 0 and 1 might be turned into false and true.
       #
@@ -270,6 +270,6 @@ module Weechat
       end
     end
 
-    include CLASS_METHODS
+    include ClassMethods
   end
 end

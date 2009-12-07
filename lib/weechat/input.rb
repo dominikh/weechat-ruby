@@ -1,3 +1,8 @@
+  # :input=>1,
+  # :input_buffer_alloc=>256,
+  # :input_buffer_length=>0,
+  # :input_buffer_1st_display=>0,
+
 module Weechat
   class Input
     def initialize(buffer)

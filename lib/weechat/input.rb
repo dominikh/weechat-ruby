@@ -17,6 +17,14 @@ module Weechat
     end
     alias_method :content=, "text="
 
+    def size
+      @buffer.input_buffer_size
+    end
+
+    def pos
+      @buffer.input_buffer_pos
+    end
+
     def get_unknown_commands=(val)
       @buffer.set_property("input_get_unknown_commands", val)
     end

@@ -14,6 +14,11 @@ module Weechat
     def ==(other)
       @ptr == other.ptr
     end
-    alias_method :eql?, :==
+    alias_method :eql?, "=="
+    alias_method :equal?, "=="
+
+    def hash
+      @ptr.hash
+    end
   end
 end

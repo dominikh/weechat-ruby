@@ -131,9 +131,11 @@ module Weechat
     # @private
     @transformations = {
       [:lines_hidden, :time_for_each_line, :text_search_exact,
-       :text_search_found] => lambda {|v| Weechat.integer_to_bool(v) },
+       :text_search_found, :current_buffer] => lambda {|v| Weechat.integer_to_bool(v) },
       [:highlight_words, :highlight_tags] => lambda {|v| v == "-" ? [] : v.split(",") },
       [:notify] => lambda {|v| NOTIFY_LEVELS[v] },
+      [:text_search] => lambda {|v| [:none, :backward, :foward][v] },
+      [:type] => lambda {|v| [:formatted, :free][v]},
     }
 
     # The transformation procedures that get applied to values before they
@@ -152,18 +154,24 @@ module Weechat
         i = NOTIFY_LEVELS.index(v)
         i or raise Exception::InvalidPropertyValue.new(v.to_s)
       },
+      [:type] => lambda {|v|
+        v = v.to_s
+        raise Exception::InvalidPropertyValue.new(v) if !["formatted", "free"].include?(v)
+        v
+      },
     }
 
     # @private
     @mappings = {
       :lines_hidden?       => :lines_hidden,
       :time_for_each_line? => :time_for_each_line,
-      :text_search_exact?  => :text_search_exact,
-      :text_search_found?  => :text_search_found,
       :show_times?         => :time_for_each_line,
       :show_times=         => :time_for_each_line=,
+      :text_search_exact?  => :text_search_exact,
+      :text_search_found?  => :text_search_found,
       :position            => :number,
       :position=           => :number=,
+      :active?             => :current_buffer,
     }
 
     init_properties

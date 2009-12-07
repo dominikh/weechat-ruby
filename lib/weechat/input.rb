@@ -29,6 +29,9 @@ module Weechat
       @buffer.set_property("input_get_unknown_commands", val)
     end
 
+    # Returns true if unknown commands are being sent as plain text to the buffer.
+    #
+    # @return [Boolean]
     def get_unknown_commands?
       @buffer.get_property("input_get_unknown_commands")
     end

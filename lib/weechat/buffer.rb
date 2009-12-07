@@ -1,67 +1,9 @@
 module Weechat
   # This class provides a wrapper around WeeChat buffers.
   #
-  # While each instance of this class only contains the
-  # {Weechat::Pointer pointer} of a Buffer, several methods allow
-  # {#get_property retrieving} and {#set_property setting} properties,
-  # {#display displaying} / {#move moving} / {#close closing} buffers
-  # and working with the {#lines lines} and {#text content} of a
-  # buffer.
-  #
-  # == Accessing properties
-  # === The lowest level methods
-  # ==== With fail checking
-  #
-  # To get the raw data as returned by the Weechat API, but still
-  # applying fail checks, one uses {#get_string_property},
-  # {#get_integer_property} and {#get_infolist_property}. Values will
-  # be returned as is, without any transformations.
-  #   my_buffer.get_string_property("name")          # => "some name"
-  #   my_buffer.get_integer_property("lines_hidden") # => 1
-  #   my_buffer.get_string_property("foo")           # => Weechat::Buffer::UnknownProperty: foo
-  #
-  # To set properties, while still applying fail checks, one uses
-  # {#set_string_property} (since each value, also numbers, will be
-  # turned into strings anyway, we don't need set_integer_property).
-  #   my_buffer.set_string_property("name", "new name")
-  #   my_buffer.set_string_property("foo", "bar") # => Weechat::Buffer::UnsettableProperty: foo
-  #
-  #
-  # === Without fail checking
-  #
-  # This is the lowest possible way of accessing properties, since
-  # these methods will just call out to the API directly. These
-  # methods are {#get_string}, {#get_integer} and {#set}. There is no
-  # direct way to get properties returned by infolists other than
-  # using {Weechat::Infolist.parse}
-  #
-  # === Using the abstractional layer
-  #
-  # The proper way of getting and setting properties is by either
-  # using {#get_property} and {#set_property} or by directly accessing
-  # attributes. Note that when directly accessing them, one can
-  # use query methods, e.g. #lines_hidden? if the property returns
-  # true or false.
-  #
-  # The added benefit, except from cleaner code, is that the methods
-  # return proper values. Instead of 0 and 1 it replies false and true
-  # (where applicable) and also allows those when setting values.
-  # Lists will be represented as arrays, while the low level API would
-  # return a comma delimited list.
-  #   my_buffer.name          # => "some name"
-  #   my_buffer.lines_hidden? # => false
-  #   my_buffer.lines_hidden = true
-  #
-  # WeeChat also uses the setter API for a few operations like
-  # updating the read marker or switching to another buffer. While
-  # this is possible with the Ruby abstraction, it also provides
-  # proper methods for doing so ( {#update_marker}, {#show} ):
-  #   my_buffer.update_marker
-  #   another_buffer.show
-  #
   # == Creating new buffers
   #
-  # Using {Buffer.create}, one can also create new buffers which even
+  # Using {Buffer.create}, one can create new buffers which even
   # respond to input and closing using hooks (procs or methods or
   # anything that responds to #call).
   #   Buffer.create("my buffer",
@@ -76,56 +18,73 @@ module Weechat
   # == The input line
   #
   # While internally the input line is managed by two properties
-  # (`input` and `input_get_unknown_commands`), the Weechat Ruby
+  # (+input+ and +input_get_unknown_commands+), the WeeChat Ruby
   # abstraction uses one instance of the {Input} class per buffer (see
   # {#input}). The content of the input line thus can be read using
   # {Input#text} and set using {Input#text=} (or using the shorthand
   # {#input=}). To turn on/off the receiving of unknown commands, use
   # {Input#get_unknown_commands=}.
   #
-  # == List of gettable properties using {#get_property}
+  # == Key binds
   #
-  # * plugin
-  # * name         -- The name of the buffer
-  # * short_name   -- The short name of the buffer
-  # * title        -- The title of the buffer
-  # * input        -- (Use {Input#text} instead)
-  # * number       -- The number (position) of the buffer
-  # * num_displayed
-  # * notify       -- The buffer's notify level. Can be :never, :highlights, :messages and :always
-  # * lines_hidden -- true if at least one line is hidden (filtered), otherwise false
-  # * prefix_max_length
-  # * time_for_each_line -- true if timestamps are shown, false otherwise (also called show_times?)
-  # * text_search
-  # * text_search_exact
-  # * text_search_found
+  # Buffer local key binds can be set/unset using {#bind_keys} and
+  # {#unbind_keys}. Note, however, that key binds can only invoke
+  # commands, not callbacks (you can, however, pass in existing
+  # {Command} instances).
   #
-  # == List of settable properties using {#set_property}
+  # == List of getters
   #
-  # * hotlist
-  # * unread          -- (Use {#update_marker} instead)
-  # * display         -- (Use {#display} instead)
-  # * number          -- (Use {#move} instead)
-  # * name            -- The name of the buffer
-  # * short_name      -- The short name of the buffer
-  # * type
-  # * notify          -- The buffer's notify level. Can be :never, :highlights, :messages and :everything
-  # * title           -- The title of the buffer
-  # * time_for_each_line -- Whether to display times or not (also called show_times)
-  # * nicklist
-  # * nicklist_case_sensitive
-  # * nicklist_display_groups
-  # * highlight_words -- Sets the words to highlight in the buffer, expects an array
-  # * highlight_tags  -- Sets the tags to highlight in the buffer, expects an array
-  # * input           -- (Use {Input#text=} instead)
-  # * input_get_unknown_commands -- (Use {Input#get_unknown_commands=} instead)
+  # [plugin]             (not implemented yet)
+  # [name]               The name of the buffer
+  # [short_name]         The short name of the buffer
+  # [title]              The title of the buffer
+  # [number]             The number (position) of the buffer
+  # [num_displayed]      How many windows are displaying this buffer
+  # [notify]             The buffer's notify level. Can be +:never+, +:highlights+, +:messages+ and +:always+
+  # [lines_hidden?]      true if at least one line is hidden (filtered), otherwise false
+  # [prefix_max_length]  "max length for prefix align"
+  # [show_times?]        true if timestamps are shown, false otherwise (also called show_times?)
+  # [text_search]        The type of search. Can be +:none+, +:backward+ and +:forward+
+  # [text_search_exact?] true if search is case sensitive
+  # [text_search_found?] true if text was found, false otherwise
+  # [text_search_input]  The content of the input buffer before the search was started
+  # [active?]            Whether this is the current buffer
+  # [highlight_words]    An array of words that trigger highlighting
+  # [highlight_tags]     An array of tags that trigger highlighting
+  # [type]               The type of the buffer, can be either +:formatted+ or +:free+
+  #
+  # == List of gettable properties using the infolist
+  #
+  # :print_hooks_enabled=>1,
+  # :first_line_not_read=>0,
+  # :prefix_max_length=>0,
+  # :nicklist_case_sensitive=>0,
+  # :nicklist_display_groups=>1,
+  #
+  #
+  #
+  # == List of setters
+  #
+  # [hotlist]                 (not implemented yet)
+  # [name]                    The name of the buffer
+  # [short_name]              The short name of the buffer
+  # [type]                    The type of the buffer, can be either +:formatted+ or +:free+
+  # [notify]                  The buffer's notify level. Can be +:never+, +:highlights+, +:messages+ and +:everything+
+  # [title]                   The title of the buffer
+  # [show_times]              Whether to display times or not
+  # [nicklist]                (not implemented yet)
+  # [nicklist_case_sensitive] (not implemented yet)
+  # [nicklist_display_groups] (not implemented yet)
+  # [highlight_words]         The words to highlight in the buffer, expects an array
+  # [highlight_tags]          The tags to highlight in the buffer, expects an array
+  # [input]                   Sets the content of the input line (See {Input#text=})
   #
   # === Notify levels
   #
-  # * :never      -- Don't notify at all
-  # * :highlights -- Only notify on highlights
-  # * :messages   -- Notify on highlights and messages
-  # * :everything -- Notify on everything
+  # [:never]      Don't notify at all
+  # [:highlights] Only notify on highlights
+  # [:messages]   Notify on highlights and messages
+  # [:everything] Notify on everything
   #
   # @see http://www.weechat.org/files/doc/stable/weechat_plugin_api.en.html#buffers The WeeChat Buffer API
   class Buffer
@@ -219,6 +178,7 @@ module Weechat
       # Returns a list of all buffers
       #
       # @return [Array<Buffer>]
+      # @todo move into own module
       def buffers
         buffers = []
         Weechat::Infolist.parse("buffer").each do |buffer|

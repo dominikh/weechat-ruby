@@ -52,7 +52,7 @@ module Weechat
   end
 
   def self.integer_to_bool(int)
-    int == 1 ? true : false
+    int == 0 ? false : true
   end
 
   def self.bool_to_integer(bool)

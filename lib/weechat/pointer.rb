@@ -20,5 +20,9 @@ module Weechat
     def hash
       @ptr.hash
     end
+
+    def inspect
+      sprintf "#<%s:0x%x @ptr=%p>", self.class, object_id << 1, @ptr
+    end
   end
 end

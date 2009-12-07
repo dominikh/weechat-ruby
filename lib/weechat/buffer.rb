@@ -508,10 +508,6 @@ module Weechat
     alias_method :count, :size
     alias_method :length, :size
 
-    def inspect
-      sprintf "#<%s:0x%x @ptr=%p>", self.class, object_id << 1, @ptr
-    end
-
     # Bind keys to a command.
     #
     # @param [Array<String>] keys An array of keys which will be used to build a keychain

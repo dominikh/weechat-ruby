@@ -44,22 +44,12 @@ module Weechat
     include Weechat::Pointer
     extend Weechat::Properties
 
-    # A list of all properties that can be retrieved using {#get_string_property}.
-    #
-    # @private
-    @known_string_properties  = [].freeze
-
     # A list of all properties that can be retrieved using {#get_integer_property}.
     #
     # @private
     @known_integer_properties = %w(win_x win_y win_width win_height win_width_pct
     win_height_pct first_line_displayed
     scroll scroll_lines_after).freeze
-
-    # A list of all properties that can be set using {#set_property}.
-    #
-    # @private
-    @settable_properties = [].freeze
 
     # The transformation procedures that get applied to values after
     # they've been received using {#get_property}.
@@ -68,13 +58,6 @@ module Weechat
     @transformations = {
       [:first_line_displayed, :scroll] => lambda {|v| Weechat.integer_to_bool(v) },
       [:buffer] => lambda {|v| Buffer.new(v) },
-    }.freeze
-
-    # The transformation procedures that get applied to values before they
-    # are set by {#set_property}.
-    #
-    # @private
-    @rtransformations = {
     }.freeze
 
     # @private

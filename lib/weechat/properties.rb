@@ -37,6 +37,13 @@ module Weechat
       end
 
       def init_properties
+        @known_string_properties  ||= [].freeze
+        @known_integer_properties ||= [].freeze
+        @settable_properties      ||= [].freeze
+        @transformations          ||= {}.freeze
+        @rtransformations         ||= {}.freeze
+        @mappings                 ||= {}.freeze
+
         @type = self.name.downcase.split("::").last
 
         # this defines all the getter methods

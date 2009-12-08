@@ -1,6 +1,7 @@
 module Weechat
   # == Gettable properties
   #
+  # [buffer]                The buffer currently shown in the window
   # [x]                     X position of the window in the terminal
   # [y]                     Y position of the window in the terminal
   # [width]                 Width of the window

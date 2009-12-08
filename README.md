@@ -105,6 +105,7 @@ necessary to use them directly from time to time.
 
 See {Weechat::Infolist}
 
+
 Sorted lists
 ============
 
@@ -126,6 +127,44 @@ code that was executed last in a callback. A raised exception, on the
 other side, is unambiguous. Those exceptions live in the
 Weechat::Exception namespace and got the same name as the old
 constants.
+
+
+Contributing to the project
+===========================
+
+In case you want to contribute to this lovely project: Don't worry,
+you will have plenty of chances for doing so!
+
+Sending me gifts
+----------------
+
+While sending me gifts won't fix any bugs or add any new features, it
+will postively affect my mood, and some people say that good temper
+equals many bugfixes, so give it a try!
+
+I accept things like new hardware, gadgets, beer, women, plain money
+and whatever else you can think of. But please DO NOT send me your
+first born child, even if you really want to, thanks.
+
+Reporting bugs / requesting features
+-------------------------------------
+
+In case you found a bug in my
+library or miss an important feature, feel free to
+[create a ticket][issues].
+
+Contributing code
+-----------------
+
+Do you belong to those that don't want to only report bugs but who
+also fix them on your own? Great! Fork my repository at github, create
+a feature branch, do your stuff and then send me a pull request. If
+your code does what it is supposed to do, I will merge in your
+changes.
+
+Telling me how great I am
+-------------------------
+No, really, feel free to tell me.
 
 [issues]: http://github.com/dominikh/weechat-ruby/issues
 [weechat_doc]: http://www.weechat.org/files/doc/stable/weechat_plugin_api.en.html

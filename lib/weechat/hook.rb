@@ -28,6 +28,10 @@ module Weechat
       self.class.register(self)
     end
 
+    class << self
+      alias_method :hook, :new
+    end
+
     # def to_s
     #   @ptr
     # end

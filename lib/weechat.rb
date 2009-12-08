@@ -51,6 +51,13 @@ module Weechat
     puts(object.pretty_inspect, buffer)
   end
 
+  # Writes text to the WeeChat log +weechat.log+
+  #
+  # @return [void]
+  def self.log(text)
+    Weechat.log_print(text)
+  end
+
   def self.integer_to_bool(int)
     int == 0 ? false : true
   end

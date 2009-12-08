@@ -75,7 +75,7 @@ display:
 [x] print
 print_date_tags
 print_y
-log_print
+[x] log_print
 
 hooks:
 [x] hook_command

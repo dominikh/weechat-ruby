@@ -14,6 +14,10 @@ module Weechat
       Weechat::Command.find_by_id(id).call(Weechat::Buffer.new(buffer), *args.split(" "))
     end
 
+    def command_run_callback(id, buffer, command)
+      Weechat::Hooks::CommandRunHook.find_by_id(id).call(Weechat::Buffer.new(buffer), command)
+    end
+
     def timer_callback(id, remaining)
       Weechat::Timer.find_by_id(id).call(remaining.to_i)
     end
@@ -105,3 +109,4 @@ require 'weechat/prefix.rb'
 require 'weechat/color.rb'
 require 'weechat/plugin.rb'
 require 'weechat/rubyext/string.rb'
+require 'weechat/hooks.rb'

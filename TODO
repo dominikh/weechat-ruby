@@ -2,7 +2,7 @@ general:
 register
 
 plugins:
-plugin_get_name
+[x] plugin_get_name
 
 strings:
 charset_set
@@ -109,11 +109,11 @@ buffer_get_pointer
 [x] buffer_set
 
 windows:
-current_window
-window_get_integer
-window_get_string
-window_get_pointer
-window_set_title
+[x] current_window
+[x] window_get_integer
+[x] window_get_string
+[x] window_get_pointer
+[x] window_set_title
 
 nicklist:
 nicklist_add_group

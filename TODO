@@ -105,7 +105,7 @@ buffers:
 [x] buffer_close
 [x] buffer_get_integer
 [x] buffer_get_string
-buffer_get_pointer
+[x] buffer_get_pointer
 [x] buffer_set
 
 windows:

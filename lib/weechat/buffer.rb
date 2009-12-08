@@ -34,7 +34,7 @@ module Weechat
   #
   # == List of getters
   #
-  # [plugin]             (not implemented yet)
+  # [plugin]             The plugin which created the buffer
   # [name]               The name of the buffer
   # [short_name]         The short name of the buffer
   # [title]              The title of the buffer

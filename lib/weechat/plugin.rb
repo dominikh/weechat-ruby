@@ -1,15 +1,15 @@
 module Weechat
   # == Gettable properties
   #
-  # [filename]
-  # [handle]
-  # [name]
-  # [description]
-  # [author]
-  # [version]
-  # [license]
-  # [charset]
-  # [debug?]
+  # [filename]    Filename of the plugin
+  # [handle]      ?
+  # [name]        Name of the plugin
+  # [description] Description of the plugin
+  # [author]      Author of the plugin
+  # [version]     Version of the plugin
+  # [license]     Licence of the plugin
+  # [charset]     ?
+  # [debug?]      ?
   class Plugin
     include Weechat::Pointer
     extend Weechat::Properties
@@ -39,10 +39,53 @@ module Weechat
         plugins
       end
       alias_method :all, :plugins
+
+      # Loads a plugin.
+      #
+      # @return [void]
+      def load(name)
+        Weechat.exec("/plugin load #{name}")
+      end
+
+      # Reloads all plugins.
+      #
+      # Note: This will also reload the ruby plugin.
+      #
+      # @return [void]
+      def reload_all
+        Weechat.exec("/plugin reload")
+      end
     end
 
     def name
       Weechat.plugin_get_name(@ptr)
+    end
+
+    # Unloads the plugin.
+    #
+    # @param [Boolean] force If the plugin to be unloaded is "ruby",
+    #   +force+ has to be true.
+    # @return [Boolean] true if we attempted to unload the plugin
+    def unload(force = false)
+      if name == "ruby" and !force
+        Weechat.puts "Won't unload the ruby plugin unless you force it."
+        false
+      else
+        Weechat.exec("/plugin unload #{name}")
+        true
+      end
+    end
+
+    # Reload the plugin.
+    #
+    # @param [Boolean] force If the plugin to be reloaded is "ruby", +force+ has to be true.
+    # @return [Boolean] true if we attempted to reload the plugin
+    def reload(force = false)
+      if name == "ruby" and !force
+        Weechat.puts "Won't reload the ruby plugin unless you force it."
+      else
+        Weechat.exec("/plugin reload #{name}")
+      end
     end
   end
 end

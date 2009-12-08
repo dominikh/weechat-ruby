@@ -49,11 +49,12 @@ module Weechat
 
       # Reloads all plugins.
       #
-      # Note: This will also reload the ruby plugin.
+      # Note: This will not reload the ruby plugin.
       #
-      # @return [void]
+      # @return [Array<Plugin>] All plugins that have been reloaded.
       def reload_all
-        Weechat.exec("/plugin reload")
+        plugins = all.select{|plugin| plugin.name != "ruby"}
+        plugins.each {|plugin| plugin.reload}
       end
     end
 

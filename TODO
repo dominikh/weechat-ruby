@@ -5,19 +5,19 @@ plugins:
 [x] plugin_get_name
 
 strings:
-charset_set
-iconv_to_internal
-iconv_from_internal
-gettext
-ngettext
+[/] charset_set
+[/] iconv_to_internal
+[/] iconv_from_internal
+[/] gettext
+[/] ngettext
 [x] string_remove_color
 
 directories:
-mkdir_home
-mkdir
-mkdir_parents
+[-] mkdir_home
+[-] mkdir
+[-] mkdir_parents
 
-sorted lists:
+[/] sorted lists:
 list_new
 list_add
 list_search

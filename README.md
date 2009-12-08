@@ -105,5 +105,13 @@ necessary to use them directly from time to time.
 
 See {Weechat::Infolist}
 
+Sorted lists
+============
+
+While the WeeChat API exposes a few functions for creating and working
+with sorted lists, I've decided not to implement any of those because
+Ruby provides own means of lists. If you think this is a missing
+feature, [inform me][issues] and I might add them to the library.
+
 [issues]: http://github.com/dominikh/weechat-ruby/issues
 [weechat_doc]: http://www.weechat.org/files/doc/stable/weechat_plugin_api.en.html

@@ -92,6 +92,7 @@ module Weechat
 end
 
 require 'weechat/terminal.rb'
+require 'weechat/callback.rb'
 require 'weechat/property.rb'
 require 'weechat/properties.rb'
 require 'weechat/exceptions.rb'

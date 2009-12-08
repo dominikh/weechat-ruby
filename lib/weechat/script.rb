@@ -28,12 +28,18 @@ module Weechat
                            self.script[:description],
                            'weechat_script_unload',
                            self.script[:charset])
-          setup if respond_to?(:setup)
+          if respond_to?(:setup)
+            return Weechat::Utilities.evaluate_call { setup }
+          end
+
           return Weechat::WEECHAT_RC_OK
         end
 
         def weechat_script_unload
-          teardown if respond_to?(:teardown)
+          if respond_to?(:teardown)
+            return Weechat::Utilities.evaluate_call { teardown }
+          end
+
           return Weechat::WEECHAT_RC_OK
         end
       end

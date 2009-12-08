@@ -113,5 +113,19 @@ with sorted lists, I've decided not to implement any of those because
 Ruby provides own means of lists. If you think this is a missing
 feature, [inform me][issues] and I might add them to the library.
 
+
+
+Return values
+=============
+
+While the original API expects you to return constants denoting
+success/failure, this library expects you to raise certain exceptions.
+The idea behind this is that the original constants had the values 0,
+1 and -1; values which might well be implicitly returned by any ruby
+code that was executed last in a callback. A raised exception, on the
+other side, is unambiguous. Those exceptions live in the
+Weechat::Exception namespace and got the same name as the old
+constants.
+
 [issues]: http://github.com/dominikh/weechat-ruby/issues
 [weechat_doc]: http://www.weechat.org/files/doc/stable/weechat_plugin_api.en.html

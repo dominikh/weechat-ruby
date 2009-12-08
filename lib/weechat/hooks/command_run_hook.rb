@@ -14,7 +14,7 @@ module Weechat
                       command.to_s
                     end
 
-        @callback = callback
+        @callback = Callback.new(callback)
         @ptr      = Weechat.hook_command_run(@command, "command_run_callback", id.to_s)
         if also_arguments
           @ptr2 = Weechat.hook_command_run("#@command *", "command_run_callback", id.to_s)

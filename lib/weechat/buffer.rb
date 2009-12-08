@@ -244,8 +244,7 @@ module Weechat
       # @private
       def call_input_callback(id, buffer, input)
         buffer = Buffer.new(buffer)
-        @callbacks[id.to_i][:input_callback].call(buffer, input)
-        return Weechat::WEECHAT_RC_OK
+        return @callbacks[id.to_i][:input_callback].call(buffer, input)
       end
 
       # This method manages all close callbacks, resolving the
@@ -258,8 +257,7 @@ module Weechat
       # @private
       def call_close_callback(id, buffer)
         buffer = Buffer.new(buffer)
-        @callbacks[id.to_i][:close_callback].call(buffer)
-        return Weechat::WEECHAT_RC_OK
+        return @callbacks[id.to_i][:close_callback].call(buffer)
       end
 
       # Returns all callbacks
@@ -299,8 +297,8 @@ module Weechat
       # @raise [Exception::DuplicateBufferName] In case a buffer with that name already exists
       def create(name, input_callback, close_callback)
         @callbacks << {
-          :input_callback => input_callback,
-          :close_callback => close_callback,
+          :input_callback => Callback.new(input_callback),
+          :close_callback => Callback.new(close_callback),
         }
         id = @callbacks.size - 1
         ptr = Weechat.buffer_new(name.to_s, "input_callback", id.to_s, "close_callback", id.to_s)

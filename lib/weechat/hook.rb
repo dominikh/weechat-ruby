@@ -28,6 +28,10 @@ module Weechat
       self.class.register(self)
     end
 
+    def callback=(callback)
+      @callback = Callback.new(callback)
+    end
+
     class << self
       alias_method :hook, :new
     end
@@ -67,8 +71,7 @@ module Weechat
     end
 
     def call(*args)
-      @callback.call(*args)
-      Weechat::WEECHAT_RC_OK
+      return @callback.call(*args)
     end
 
     def self.find_by_id(id)

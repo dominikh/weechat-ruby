@@ -23,5 +23,9 @@ module Weechat
     #
     # @see Buffer.create
     class DuplicateBufferName < RuntimeError; end
+
+    class WEECHAT_RC_OK < ::Exception; end
+    class WEECHAT_RC_ERROR < ::Exception; end
+    class WEECHAT_RC_OK_EAT < ::Exception; end
   end
 end

@@ -6,7 +6,7 @@ module Weechat
     def initialize(interval, align=0, max=0, &block)
       super
       @remaining= nil
-      @callback = block
+      @callback = Callback.new(block)
       @interval = interval
       @align    = align
       @max      = max
@@ -20,13 +20,13 @@ module Weechat
 
     def call(remaining)
       @remaining = remaining.to_i
-      super
+      ret = super
 
       if @remaining == 0
         self.unhook
       end
 
-      Weechat::WEECHAT_RC_OK
+      return ret
     end
 
     def stop

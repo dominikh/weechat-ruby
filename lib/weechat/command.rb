@@ -14,7 +14,7 @@ module Weechat
       @args             = args
       @args_description = args_description
       @completion       = completion
-      @callback         = callback
+      @callback         = Callback.new(callback)
       @ptr              = Weechat.hook_command(command,
                                        description.to_s,
                                        args.to_s,

@@ -25,6 +25,7 @@ module Weechat
       @ptr      = nil
       @callback = nil
       @hooked   = true
+      self.class.register(self)
     end
 
     # def to_s

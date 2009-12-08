@@ -22,7 +22,6 @@ module Weechat
                                        completion.to_s,
                                        "command_callback",
                                        id.to_s)
-      self.class.register(self)
     end
 
     class << self

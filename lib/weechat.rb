@@ -28,42 +28,57 @@ module Weechat
     end
     alias_method :send_command, :exec
     alias_method :execute, :exec
-  end
 
-  def self.puts(text, buffer = nil)
-    buffer = case buffer
-             when nil
-               ""
-             when :current
-               Weechat::Buffer.current
-             else
-               buffer
-             end
-    Weechat.print(buffer.to_s, text.to_s)
-    nil # to mimic Kernel::puts
-  end
+    def puts(text, buffer = nil)
+      buffer = case buffer
+               when nil
+                 ""
+               when :current
+                 Weechat::Buffer.current
+               else
+                 buffer
+               end
+      Weechat.print(buffer.to_s, text.to_s)
+      nil # to mimic Kernel::puts
+    end
 
-  def self.p(object, buffer = nil)
-    self.puts(object.inspect, buffer)
-  end
+    def p(object, buffer = nil)
+      self.puts(object.inspect, buffer)
+    end
 
-  def self.pp(object, buffer = nil)
-    puts(object.pretty_inspect, buffer)
-  end
+    def pp(object, buffer = nil)
+      puts(object.pretty_inspect, buffer)
+    end
 
-  # Writes text to the WeeChat log +weechat.log+
-  #
-  # @return [void]
-  def self.log(text)
-    Weechat.log_print(text)
-  end
+    # Writes text to the WeeChat log +weechat.log+
+    #
+    # @return [void]
+    def log(text)
+      Weechat.log_print(text)
+    end
 
-  def self.integer_to_bool(int)
-    int == 0 ? false : true
-  end
+    def integer_to_bool(int)
+      int == 0 ? false : true
+    end
 
-  def self.bool_to_integer(bool)
-    bool ? 1 : 0
+    def bool_to_integer(bool)
+      bool ? 1 : 0
+    end
+
+    alias_method :old_mkdir_home, :mkdir_home
+    alias_method :old_mkdir, :mkdir
+    alias_method :old_mkdir_parents, :mkdir_parents
+    def mkdir_home(*args)
+      integer_to_bool(old_mkdir_home(*args))
+    end
+
+    def mkdir(*args)
+      integer_to_bool(old_mkdir(*args))
+    end
+
+    def mkdir_parents(*args)
+      integer_to_bool(old_mkdir_parents(*args))
+    end
   end
 end
 

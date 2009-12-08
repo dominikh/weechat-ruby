@@ -1,3 +1,8 @@
+if not defined? Weechat
+  raise LoadError.new('The weechat gem can only be required from scripts ' +
+  'that are run under the WeeChat IRC client using the Ruby plugin.')
+end
+
 require 'pp'
 
 module Weechat

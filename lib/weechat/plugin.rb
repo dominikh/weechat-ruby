@@ -88,5 +88,16 @@ module Weechat
         Weechat.exec("/plugin reload #{name}")
       end
     end
+
+    # Returns an array of all scripts loaded by this plugin.
+    #
+    # @return [Array<Script>]
+    def scripts
+      scripts = []
+      Infolist.parse("#{name}_script").each do |script|
+        scripts << Script.new(script[:pointer], self)
+      end
+      scripts
+    end
   end
 end

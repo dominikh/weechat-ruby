@@ -548,6 +548,10 @@ module Weechat
     def windows
       Window.all.select {|window| window.buffer == self }
     end
+
+    def plugin
+      Plugin.new(Weechat.buffer_get_pointer(@ptr, "plugin"))
+    end
   end
 
   # The core buffer

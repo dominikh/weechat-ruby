@@ -206,9 +206,15 @@ module Weechat
       # Finds a buffer by its name and its plugin.
       #
       # @param [String] name The name of the buffer to find
-      # @param [String] plugin The plugin of the buffer to find
+      # @param [String, Plugin] plugin The plugin of the buffer to find
       # @return [Buffer, nil] An existing buffer or nil if non was found.
       def find_by_name(name, plugin = "ruby")
+        plugin = case plugin
+                 when Plugin
+                   plugin.name
+                 else
+                   plugin.to_s
+                 end
         ptr = Weechat.buffer_search(plugin, name)
         if ptr == ""
           nil

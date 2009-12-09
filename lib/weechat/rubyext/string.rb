@@ -11,6 +11,7 @@ class String
   alias_method :remove_colors!, :remove_color!
   alias_method :strip_colors!, :remove_color!
 
+  # @author Loren Segal
   def shell_split
     out = [""]
     state = :none

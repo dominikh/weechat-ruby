@@ -41,6 +41,8 @@ module Weechat
         parts[1] = Weechat::Buffer.find(parts[1], parts[0])
         if parts[2]
           parts[2] = parts[2].split(",")
+        else
+          parts[2] = []
         end
         parts
       },

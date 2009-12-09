@@ -469,16 +469,17 @@ module Weechat
     # Returns an array with all lines of the buffer.
     #
     # @param [Boolean] strip_colors Whether to strip out all color codes
-    # @return [Array<String>] The lines
+    # @return [Array<Line>] The lines
     # @see #text
     def lines(strip_colors = false)
       lines = []
       Weechat::Infolist.parse("buffer_lines", @ptr).each do |line|
+        line = Weechat::Line.from_hash(line)
         if strip_colors
-          line[:prefix].strip_colors!
-          line[:message].strip_colors!
+          line.prefix.strip_colors!
+          line.message.strip_colors!
         end
-        lines << ("%s %s %s" % [line[:date], line[:prefix], line[:message]])
+        lines << line
       end
 
       lines

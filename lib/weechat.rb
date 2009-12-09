@@ -11,7 +11,7 @@ module Weechat
     def command_callback(id, buffer, args)
       # TODO this mimics weechat's current behaviour for the C API.
       # sophisticated argument parsing will come, some day.
-      Weechat::Command.find_by_id(id).call(Weechat::Buffer.new(buffer), *args.split(" "))
+      Weechat::Command.find_by_id(id).call(Weechat::Buffer.new(buffer), *args.shell_split)
     end
 
     def command_run_callback(id, buffer, command)

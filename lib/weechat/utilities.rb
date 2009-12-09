@@ -14,8 +14,17 @@ module Weechat
       return Weechat::WEECHAT_RC_OK
     end
     def self.apply_transformation(property, value, transformations)
-      transformation = transformations.find {|properties, transformation|
-        properties.include?(property.to_sym)
+      transformation = transformations.find {|properties, transformations|
+        properties.any? {|prop|
+          case prop
+          when Regexp
+            prop =~ property.to_s
+          when String, Symbol
+            prop.to_sym == property.to_sym
+          else
+            false
+          end
+        }
       }
 
       if transformation

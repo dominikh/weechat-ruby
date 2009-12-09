@@ -512,7 +512,10 @@ module Weechat
     # @param [String, Command] command The command to execute when the keys are being pressed
     # @return [String] The keychain
     # @see #unbind_keys
-    def bind_keys(keys, command)
+    def bind_keys(*args)
+      keys = args[0..-2]
+      command = args[-1]
+
       keychain = keys.join("-")
       if command.is_a? Command
         command = command.command
@@ -527,9 +530,9 @@ module Weechat
     # @param[Array<String>] keys An array of keys which will be used to build a keychain
     # @return [String] The command that was assigned to the key bind
     # @see #bind_keys
-    def unbind_keys(keys)
+    def unbind_keys(*keys)
       keychain = keys.join("-")
-      set("key_unbind_#{keychain}")
+      set("key_unbind_#{keychain}", "")
       @keybinds.delete keys
     end
 

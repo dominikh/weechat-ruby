@@ -27,15 +27,15 @@ module Weechat
 
     class << self
       def find_by_name(name)
-        if name.nil? or name.empty?
-          name = "core"
+        if name.nil? or name.empty? or name == "core"
+          return Plugin.new("")
         end
         plugins.find {|plugin| plugin.name == name}
       end
       alias_method :find, :find_by_name
 
       def plugins
-        plugins = []
+        plugins = [Plugin.new("")]
         Weechat::Infolist.parse("plugin").each do |plugin|
           plugins << Plugin.new(plugin[:pointer])
         end

@@ -1,5 +1,5 @@
-general:
-register
+scripts:
+[x] register
 
 plugins:
 [x] plugin_get_name
@@ -162,3 +162,4 @@ upgrade_new
 upgrade_write_object
 upgrade_read
 upgrade_close
+

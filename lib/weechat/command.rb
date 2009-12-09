@@ -7,21 +7,51 @@ module Weechat
     attr_reader :args
     attr_reader :args_description
     attr_reader :completion
-    def initialize(command, description, args=nil, args_description=nil, completion=nil, &callback)
+    def initialize(*args, &callback)
+      raise "No callback specified" if callback.nil?
       super
-      command = command.to_s
-      command[0..0] = '' if command[0..0] == '/'
-      @command          = command
-      @description      = description
-      @args             = args
-      @args_description = args_description
-      @completion       = completion
+
+      if args.size == 2
+        @command, @description = args
+      elsif args.size == 1 && args[0].is_a?(Hash)
+        @command, @description, @args, =
+        args[0].values_at(:command, :description, :args)
+
+        @completion = case args[0][:completion]
+                      when Array
+                        args[0][:completion].join(" || ")
+                      else
+                        args[0][:completion].to_s
+                      end
+
+        case args[0][:args_description]
+        when Hash
+          lines = []
+          color = Weechat.color("white")
+          reset = Weechat.color("reset")
+          max_length = args[0][:args_description].keys.map {|k| k.size}.max
+          args[0][:args_description].each do |key, value|
+            key = (" " * (max_length - key.size)) + key
+            lines << "#{color}#{key}: #{reset}#{value}"
+          end
+          @args_description = lines.join("\n")
+        when Array
+          @args_description = args[0][:args_description].join("\n")
+        else
+          @args_description = args[0][:args_description].to_s
+        end
+
+      else
+        raise "Please supply two arguments or a hash"
+      end
+
+      @command[0..0] = '' if @command[0..0] == '/'
       @callback         = Callback.new(callback)
-      @ptr              = Weechat.hook_command(command,
-                                       description.to_s,
-                                       args.to_s,
-                                       args_description.to_s,
-                                       completion.to_s,
+      @ptr              = Weechat.hook_command(@command,
+                                       @description.to_s,
+                                       @args.to_s,
+                                       @args_description.to_s,
+                                       @completion.to_s,
                                        "command_callback",
                                        id.to_s)
     end

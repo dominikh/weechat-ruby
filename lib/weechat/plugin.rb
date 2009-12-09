@@ -27,6 +27,9 @@ module Weechat
 
     class << self
       def find_by_name(name)
+        if name.nil? or name.empty?
+          name = "core"
+        end
         plugins.find {|plugin| plugin.name == name}
       end
       alias_method :find, :find_by_name

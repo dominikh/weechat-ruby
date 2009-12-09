@@ -278,6 +278,26 @@ module Weechat
         end
       end
 
+      # Returns a Hash representation of the object.
+      #
+      # @return Hash{Symbol => Property}
+      def to_h
+        h = {}
+        self.class.known_properties.each do |property|
+          val = get_property(property)
+          val.__freeze__ # only pass copies of the values
+          h[property.to_sym] = val
+        end
+
+        get_infolist.first.each do |property, value|
+          prop = Property.new(self, property)
+          prop.__freeze__
+          h[property] = prop
+        end
+
+        h
+      end
+
       def self.alias_methods(type)
         alias_method "#{type}_get_integer", :get_integer
         alias_method "#{type}_get_string", :get_string

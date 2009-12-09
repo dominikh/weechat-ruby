@@ -426,21 +426,6 @@ module Weechat
       Weechat.buffer_clear(@ptr)
     end
 
-    # Returns all properties (except from localvars) of the buffer.
-    #
-    # @return [Hash{Symbol => Object}] The properties
-    # @see #get_property
-    def to_h
-      properties = {}
-      Weechat::Infolist.parse("buffer", @ptr).first.each do |key, value|
-        properties[key.to_sym] = value
-      end
-      self.class.known_properties.each {|property|
-        properties[property.to_sym] = get_property(property)
-      }
-      properties
-    end
-
     # Returns the callbacks assigned to the buffer.
     #
     # @return (see Weechat::Buffer.callbacks)

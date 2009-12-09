@@ -1,3 +1,26 @@
+What this library is about
+==========================
+
+The idea behind this library is to provide a clean way of writing
+scripts for WeeChat, giving the programmer the usual Ruby experience.
+
+While WeeChat already provides an extensive API which allows to modify
+and control many parts of the client, that API is only providing the
+plain C functions, making it very unintuitive for Ruby users (or
+actually every other scripting/programming language, too). That also
+means that writing Ruby scripts usually comes with a lot of repetitive
+tasks, like converting C booleans to Ruby, handling string
+representations of C pointers or having to free objects. Also the
+approach of simply exposing the C API leaves us with absolutely no
+object orientation.
+
+And that's what this library is supposed to check. About every
+function is wrapped into classes, conversions are done under the hood
+and writing scripts in general becomes way more intuitive. No more
+pointers or callbacks in the form of strings, no more freeing of
+objects and a more appealing interface in general.
+
+
 Working with properties
 =======================
 
@@ -115,17 +138,60 @@ Ruby provides own means of lists. If you think this is a missing
 feature, [inform me][issues] and I might add them to the library.
 
 
+Writing scripts
+===============
+
+Initializing
+------------
+
+A common practice when writing scripts for WeeChat is to have a bunch
+of constants which contain script name, description and so on. Those
+constants then will be used in the weechat_init and weechat_register
+functions.
+
+This library is taking it a step further, expecting the user to create
+a hash called `@script` with those information (where missing
+information will be filled with default values by the library). An
+included weechat_init method will then automatically use that hash to
+register the script. After that, it will, if existing, call the
+`setup` method defined by the script writer, in which one can do
+additional things when loading the script, like creating commands.
+
+A similar hook, `teardown`, will be called when the script is
+unloaded.
+
+    require 'weechat'
+    include Weechat
+    include Script::Skeleton
+
+    @script = {
+      :name => "testscript",                           # must not be empty
+      :author => "Dominik Honnef <dominikho@gmx.net>", # defaults to "Anonymous"
+      :version => "0.0.1",                             # defaults to "0.0.1"
+      :license => 'GPL3',                              # defaults to "unlicensed"
+      :description => "this serves as a test suite and example file for the weechat gem",
+      # defaults to "Empty script description
+    }
+
+    def setup
+      # do custom stuff when the script is being loaded
+    end
+
+    def teardown
+      # do custom stuff when the script is being unloaded
+    end
+
 
 Return values
 =============
 
 While the original API expects you to return constants denoting
 success/failure, this library expects you to raise certain exceptions.
-The idea behind this is that the original constants had the values 0,
-1 and -1; values which might well be implicitly returned by any ruby
+The idea behind this is that the original constants had the values `0`,
+`1` and `-1`; values which might well be implicitly returned by any ruby
 code that was executed last in a callback. A raised exception, on the
 other side, is unambiguous. Those exceptions live in the
-Weechat::Exception namespace and got the same name as the old
+{Weechat::Exception} namespace and got the same name as the old
 constants.
 
 

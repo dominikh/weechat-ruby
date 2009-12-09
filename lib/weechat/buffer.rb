@@ -32,6 +32,13 @@ module Weechat
   # commands, not callbacks (you can, however, pass in existing
   # {Command} instances).
   #
+  # == Closed buffers
+  #
+  # The library is *NOT* doing any checks if the pointer points at a
+  # valid/still existing buffer. That means, if you do not take care
+  # of this yourself (by keeping your variables up to date or calling
+  # {#valid?} yourself), you might risk crashes.
+  #
   # == List of getters
   #
   # [plugin]             The plugin which created the buffer

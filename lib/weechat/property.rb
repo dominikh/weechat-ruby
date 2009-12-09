@@ -5,8 +5,10 @@ module Weechat
   end
 
   class Property < Blankslate
-    @properties = [] # we can't use a Hash because hashing a
+    @properties = [] # we can't use a Hash because hashing
                      # blankslate... breaks things
+
+    
     def self.properties
       @properties
     end

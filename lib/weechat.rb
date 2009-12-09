@@ -29,6 +29,32 @@ module Weechat
     def close_callback(method, buffer)
       Weechat::Buffer.call_close_callback(method, buffer)
     end
+
+    ModifierCallbackTransformations = {
+      ['irc_color_decode', 'irc_color_encode'] => lambda { |v| Weechat.integer_to_bool(v) },
+      [/^bar_condition_.+$/]                   => lambda { |v| Weechat::Window.new(v) },
+      ["input_text_content", "input_text_display",
+       "input_text_display_with_cursor"]       => lambda { |v| Weechat::Buffer.new(v) },
+      ["weechat_print"]                        => lambda { |v|
+        parts = v.split(";")
+        parts[0] = Weechat::Plugin.find(parts[0])
+        parts[1] = Weechat::Buffer.find(parts[1], parts[0])
+        if parts[2]
+          parts[2] = parts[2].split(",")
+        end
+        parts
+      },
+    }
+
+    ModifierCallbackRTransformations = {
+      [/^bar_condition_.+$/] => lambda { |v| Weechat.bool_to_integer(v) },
+    }
+
+    def modifier_callback(id, modifier, modifier_data, s)
+      modifier_data = Weechat::Utilities.apply_transformation(modifier, modifier_data, ModifierCallbackTransformations)
+      ret = Weechat::Modifier.find_by_id(id).call(modifier_data, Weechat::Line.parse(s))
+      return Weechat::Utilities.apply_transformation(modifier, ret, ModifierCallbackRTransformations)
+    end
   end
 
   class << self
@@ -102,6 +128,7 @@ require 'weechat/pointer.rb'
 require 'weechat/hook.rb'
 require 'weechat/timer.rb'
 require 'weechat/command.rb'
+require 'weechat/modifier.rb'
 require 'weechat/input.rb'
 require 'weechat/buffer.rb'
 require 'weechat/window.rb'

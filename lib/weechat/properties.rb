@@ -280,7 +280,7 @@ module Weechat
 
       # Returns a Hash representation of the object.
       #
-      # @return Hash{Symbol => Property}
+      # @return [Hash{Symbol => Property}]
       def to_h
         h = {}
         self.class.known_properties.each do |property|

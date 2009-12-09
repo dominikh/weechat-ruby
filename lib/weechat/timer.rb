@@ -3,7 +3,7 @@ module Weechat
     attr_reader :interval
     attr_reader :align
     attr_reader :max
-    def initialize(interval, align=0, max=0, &block)
+    def initialize(interval, max=0, align=0, &block)
       super
       @remaining= nil
       @callback = Callback.new(block)

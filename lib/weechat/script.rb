@@ -1,5 +1,40 @@
 module Weechat
   class Script
+    class Config
+      def initialize(specification)
+        @specification = specification
+      end
+
+      def __get_config__(option)
+        ret = Weechat.config_get_plugin(option)
+        if ret.empty?
+          @specification[option][1]
+        else
+          @specification[option][0].from_weechat_config(ret)
+        end
+      end
+
+      def __set_config__(option, value)
+        value = value.respond_to?(:to_weechat_config) ? value.to_weechat_config : value.to_s
+        Weechat.config_set_plugin(option, value)
+      end
+
+      def method_missing(m, *args)
+        m = m.to_s
+        if m[-1..-1] != '='
+          if @specification.has_key?(m)
+            return __get_config__(m)
+          end
+        else
+          if @specification.has_key?(m[0..-2])
+            return __set_config__(m[0..-2], *args)
+          end
+        end
+
+        super
+      end
+    end
+
     module Skeleton
       def self.included(other)
         other.__send__ :include, InstanceMethods

@@ -1,4 +1,8 @@
 class String
+  def self.from_weechat_config(v)
+    v.to_s
+  end
+
   def remove_color(replacement='')
     Weechat.string_remove_color(self, replacement)
   end

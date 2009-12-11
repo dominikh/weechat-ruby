@@ -1,10 +1,29 @@
-class Color
-  def self.from_weechat_config(v)
-    Weechat.color(v)
-  end
-end
-
 module Weechat
+  # This class represents a Weechat color.
+  #
+  # It is created from a color name and saves that name and the color
+  # representation.
+  class Color
+    def self.from_weechat_config(v)
+      new(v)
+    end
+
+    # @param [String] name Name of the color
+    def initialize(name)
+      @name = name
+      @color = Weechat.color(name)
+    end
+
+    def to_s
+      @color
+    end
+    alias_method :to_str, :to_s
+
+    def to_weechat_config
+      @name
+    end
+  end
+
   class << self
     alias_method :old_color, :color
     def color(name)

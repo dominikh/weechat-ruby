@@ -216,6 +216,12 @@ those settings using /set, so use those objects sparingly.
                                       # to a string and store it in the config
     end
 
+### Implementing own objects
+
+If you want to implement your own conversion for objects (instead of
+using YAML), define an instance method `to_weechat_config` and a class
+method `from_weechat_config(value)` on the class of your object.
+
 Return values
 -------------
 

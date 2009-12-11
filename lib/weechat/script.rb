@@ -131,18 +131,20 @@ module Weechat
 
       module InstanceMethods
         def weechat_init
-          Weechat.register(self.script[:name],
-                           self.script[:author],
-                           self.script[:version],
-                           self.script[:license],
-                           self.script[:description],
-                           'weechat_script_unload',
-                           self.script[:charset])
-          if respond_to?(:setup)
-            return Weechat::Utilities.evaluate_call { setup }
-          end
+          ret = Weechat.register(self.script[:name],
+                                 self.script[:author],
+                                 self.script[:version],
+                                 self.script[:license],
+                                 self.script[:description],
+                                 'weechat_script_unload',
+                                 self.script[:charset])
+          if Weechat.integer_to_bool(ret)
+            if respond_to?(:setup)
+              return Weechat::Utilities.evaluate_call { setup }
+            end
 
-          return Weechat::WEECHAT_RC_OK
+            return Weechat::WEECHAT_RC_OK
+          end
         end
 
         def weechat_script_unload

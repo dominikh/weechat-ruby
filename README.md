@@ -195,6 +195,13 @@ We provide an abstraction around plugin specific configs, including
 automatic typecasting and default values, getting and setting of
 values (also in place [see "Working with Properties"]).
 
+While some objects like Strings, Arrays and Booleans can be converted
+directly to and from a weechat config string, other objects can, too,
+be stored in Weechat's per-plugin config system using YAML for the
+internal representation. While this allows one to store any kind of
+objects, it is more than unlikely that a user is willing to change
+those settings using /set, so use those objects sparingly.
+
     # ...
     @config = Script::Config.new(
                                  'some_list'    => [Array, []],

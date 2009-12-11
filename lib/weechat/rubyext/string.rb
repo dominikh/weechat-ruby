@@ -1,6 +1,6 @@
 class String
   def self.from_weechat_config(v)
-    v.to_s
+    v
   end
 
   def remove_color(replacement='')
@@ -14,6 +14,43 @@ class String
   end
   alias_method :remove_colors!, :remove_color!
   alias_method :strip_colors!, :remove_color!
+
+  def escaped_split(split_char, escape_char = "\\")
+    parts = []
+    escaping = false
+    cur = ""
+
+    self.split('').each do |char|
+      if char == escape_char
+        if escaping
+          cur << char
+          escaping = false
+        else
+          escaping = true
+        end
+      elsif char == split_char
+        if !escaping
+          parts << cur
+          cur = ""
+        else
+          cur << char
+          escaping = false
+        end
+      else
+        if escaping
+          cur << escape_char
+          escaping = false
+        end
+        cur << char
+      end
+    end
+    parts << cur
+    if parts.size == 1 && parts[0].empty?
+      []
+    else
+      parts
+    end
+  end
 
   # @author Loren Segal
   def shell_split

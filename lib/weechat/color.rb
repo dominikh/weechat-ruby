@@ -1,3 +1,9 @@
+class Color
+  def self.from_weechat_config(v)
+    Weechat.color(v)
+  end
+end
+
 module Weechat
   class << self
     alias_method :old_color, :color

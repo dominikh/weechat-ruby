@@ -1,9 +1,4 @@
 module Weechat
-  class Blankslate
-    alias_method :__class__, :class
-    instance_methods.each { |m| undef_method m unless m =~ /^__/ }
-  end
-
   class Property < Blankslate
     @properties = [] # we can't use a Hash because hashing
                      # blankslate... breaks things

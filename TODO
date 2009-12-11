@@ -1,3 +1,7 @@
+[x] - implemented
+[-] - indirectly implemented
+[/] - won't be implemented
+
 scripts:
 [x] register
 
@@ -64,10 +68,10 @@ config_section_free_options
 config_section_free
 config_free
 config_get
-config_get_plugin
-config_is_set_plugin
-config_set_plugin
-config_unset_plugin
+[x] config_get_plugin
+[x] config_is_set_plugin
+[x] config_set_plugin
+[x] config_unset_plugin
 
 display:
 [x] prefix
@@ -79,7 +83,7 @@ print_y
 
 hooks:
 [x] hook_command
-hook_command_run
+[x] hook_command_run
 [x] hook_timer
 hook_fd
 hook_process
@@ -90,7 +94,7 @@ hook_signal_send
 hook_config
 hook_completion
 hook_completion_list_add
-hook_modifier
+[x] hook_modifier
 hook_modifier_exec
 hook_info
 hook_infolist

@@ -181,9 +181,36 @@ unloaded.
       # do custom stuff when the script is being unloaded
     end
 
+Commands
+--------
+
+* String#split_shell
+* Hash
+* Two arguments
+
+Configs
+-------
+
+We provide an abstraction around plugin specific configs, including
+automatic typecasting and default values, getting and setting of
+values (also in place [see "Working with Properties"]).
+
+    # ...
+    @config = Script::Config.new(
+                                 'some_list'    => [Array, []],
+                                 'some_boolean' => [Boolean, true],
+                                 'some_color'   => [Color, 'red'],
+                                )
+    def setup
+      @config.some_list # returns an array (either [] if the option
+                        # is not set yet or whatever has been set by the user)
+
+      @config.some_list << "new item" # automatically converts the new array
+                                      # to a string and store it in the config
+    end
 
 Return values
-=============
+-------------
 
 While the original API expects you to return constants denoting
 success/failure, this library expects you to raise certain exceptions.
@@ -227,6 +254,12 @@ also fix them on your own? Great! Fork my repository at github, create
 a feature branch, do your stuff and then send me a pull request. If
 your code does what it is supposed to do, I will merge in your
 changes.
+
+Write documentation
+-------------------
+
+While this library provides a basic documentation, it lacks examples
+and guides. I would really appreciate enhancements.
 
 Telling me how great I am
 -------------------------

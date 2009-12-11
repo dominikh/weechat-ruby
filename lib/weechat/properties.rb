@@ -91,7 +91,12 @@ module Weechat
       # @see #set_property
       def get_property(property)
         raise Exception::UnknownProperty.new(property) unless valid_property?(property)
-        Property.new(self, property)
+        case ret = __get_property(property)
+        when true, false, nil
+          ret
+        else
+          Property.new(self, property)
+        end
       end
 
       # @private
@@ -280,18 +285,16 @@ module Weechat
 
       # Returns a Hash representation of the object.
       #
-      # @return [Hash{Symbol => Property}]
+      # @return [Hash{Symbol => Object}]
       def to_h
         h = {}
         self.class.known_properties.each do |property|
-          val = get_property(property)
-          val.__freeze__ # only pass copies of the values
+          val = __get_property(property)
           h[property.to_sym] = val
         end
 
         get_infolist.first.each do |property, value|
-          prop = Property.new(self, property)
-          prop.__freeze__
+          prop = __get_property(property)
           h[property] = prop
         end
 

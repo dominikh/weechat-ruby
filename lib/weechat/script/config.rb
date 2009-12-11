@@ -57,7 +57,12 @@ module Weechat
       # @param [#to_s] option
       # @return [Object]
       def get!(option)
-        Option.new(self, option)
+        case ret = __get(option)
+        when true, false, nil
+          ret
+        else
+          Option.new(self, option)
+        end
       end
 
       def __get(option)

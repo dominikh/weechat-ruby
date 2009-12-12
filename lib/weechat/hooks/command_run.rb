@@ -1,6 +1,6 @@
 module Weechat
   module Hooks
-    class CommandRunHook < Hook
+    class CommandRun < Hook
       # Returns a new instance of CommandRunHook
       #
       # @param [Boolean] also_arguments If true, two hooks will be

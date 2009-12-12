@@ -3,4 +3,4 @@ module Weechat
   end
 end
 
-require 'weechat/hooks/command_run_hook.rb'
+require 'weechat/hooks/command_run.rb'

@@ -4,3 +4,4 @@ module Weechat
 end
 
 require 'weechat/hooks/command_run.rb'
+require 'weechat/hooks/print.rb'

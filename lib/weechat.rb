@@ -32,6 +32,15 @@ module Weechat
       Weechat::Info.find_by_id(id).call(arguments).to_s
     end
 
+    def print_callback(id, buffer, date, tags, displayed, highlight, prefix, message)
+      buffer    = Weechat::Buffer.new(buffer)
+      date      = Time.at(date.to_i)
+      tags      = tags.split(",")
+      displayed = Weechat.integer_to_bool(displayed)
+      highlight = Weechat.integer_to_bool(highlight)
+      Weechat::Hooks::Print.find_by_id(id).call(buffer, date, tags, displayed, highlight, prefix, message)
+    end
+
     def process_callback(id, command, code, stdout, stderr)
       code = case code
              when Weechat::WEECHAT_HOOK_PROCESS_RUNNING

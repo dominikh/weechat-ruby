@@ -7,6 +7,19 @@ class String
     self
   end
 
+  # Checks if the string represents a valid channel name
+  #
+  # @return [Boolean]
+  def channel?
+    Weechat.info_get("irc_is_channel", self) == '1' ? true : false
+  end
+
+  # Returns the nick part of a banmask
+  #
+  # @return [String] The nick
+  def nick
+    Weechat.info_get("irc_nick_from_host", self)
+  end
   def remove_color(replacement='')
     Weechat.string_remove_color(self, replacement)
   end

@@ -144,6 +144,22 @@ commands:
 
 infos:
 info_get
+  [x] fifo_filename
+  [/] irc_buffer
+  [x] irc_is_channel
+  [/] irc_nick
+  [x] irc_nick_from_host
+  [x] charset_internal
+  [x] charset_terminal
+  [x] date
+  [x] dir_separator
+  [x] filters_enabled
+  [x] inactivity
+  [x] version
+  [x] weechat_dir
+  [x] weechat_libdir
+  [x] weechat_localedir
+  [x] weechat_sharedir
 
 infolists:
 infolist_new

@@ -114,6 +114,45 @@ module Weechat
     def mkdir_parents(*args)
       integer_to_bool(old_mkdir_parents(*args))
     end
+
+    def fifo
+      Weechat.info_get("fifo_filename", "")
+    end
+
+    def compilation_date
+      Date.parse(Weechat.info_get("date", ""))
+    end
+
+    def filtering?
+      integer_to_bool(Weechat.info_get("filters_enabled", ""))
+    end
+
+    def keyboard_inactivity
+      Weechat.info_get("inactivity", "").to_i
+    end
+    alias_method :inactivity, :keyboard_inactivity
+
+    def version
+      Weechat.info_get("version", "")
+    end
+
+    def charsets
+      {
+        :internal => Weechat.info_get("charset_internal", ""),
+        :terminal => Weechat.info_get("charset_terminal", ""),
+      }
+    end
+
+    def directories
+      {
+        :weechat   => Weechat.info_get("weechat_dir", ""),
+        :lib       => Weechat.info_get("weechat_libdir", ""),
+        :locale    => Weechat.info_get("weechat_localedir", ""),
+        :share     => Weechat.info_get("weechat_sharedir", ""),
+        :separator => Weechat.info_get("dir_separator", "")
+      }
+    end
+    alias_method :dirs, :directories
   end
 end
 

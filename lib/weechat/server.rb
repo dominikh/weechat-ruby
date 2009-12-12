@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 require 'date'
 
 module Weechat
@@ -48,7 +49,7 @@ module Weechat
       def self.buffers
         servers = []
         Weechat::Infolist.parse("irc_server").each do |server|
-          servers << IrcServer.new(server[:name])
+          servers << Server.new(server[:name])
         end
         servers
       end
@@ -90,30 +91,47 @@ module Weechat
   end
 end
 __END__
-{:name=>"freenode",
-  :buffer_name=>"",
-  :buffer_short_name=>"",
-  :addresses=>"chat.freenode.net/6667",
-  :proxy=>"",
-  :ssl_cert=>"",
-  :ssl_dhkey_size=>2048,
-  :password=>"",
-  :autoreconnect_delay=>30,
-  :nicks=>"dominikh,dominikh1,dominikh2,dominikh3,dominikh4",
-  :username=>"dominikh",
-  :realname=>"Dominik Honnef",
-  :local_hostname=>"",
-  :command=>"",
-  :command_delay=>0,
-  :autojoin=>"",
-  :index_current_address=>0,
-  :current_ip=>"",
-  :sock=>-1,
-  :unterminated_message=>"",
-  :nick=>"",
-  :nick_modes=>"",
-  :prefix=>"",
-  :away_message=>"",
-  :lag=>0,
-  :lag_check_time=>nil,
-}
+ name..........................: str 'quakenet'
+     │ buffer........................: ptr 0x9bb2438
+     │ buffer_name...................: str 'server.quakenet'
+     │ buffer_short_name.............: str 'quakenet'
+     │ addresses.....................: str 'irc.quakenet.org/6667'
+     │ proxy.........................: str ''
+     │ ipv6..........................: int 0
+     │ ssl...........................: int 0
+     │ ssl_cert......................: str ''
+     │ ssl_dhkey_size................: int 2048
+     │ ssl_verify....................: int 1
+     │ password......................: str ''
+     │ autoconnect...................: int 0
+     │ autoreconnect.................: int 1
+     │ autoreconnect_delay...........: int 30
+     │ nicks.........................: str 'dominikh,dominikh1,dominikh2,dominikh3,dominikh4'
+     │ username......................: str 'dominikh'
+     │ realname......................: str 'Dominik Honnef'
+     │ local_hostname................: str ''
+     │ command.......................: str ''
+     │ command_delay.................: int 0
+     │ autojoin......................: str ''
+     │ autorejoin....................: int 0
+     │ temp_server...................: int 0
+     │ index_current_address.........: int 0
+     │ current_ip....................: str '85.236.110.226'
+     │ sock..........................: int 8
+     │ is_connected..................: int 1
+     │ ssl_connected.................: int 0
+     │ unterminated_message..........: str ''
+     │ nick..........................: str 'dominikh1'
+     │ nick_modes....................: str 'i'
+     │ prefix........................: str '@+'
+     │ reconnect_start...............: tim 1970-01-01 01:00:00
+     │ command_time..................: tim 1970-01-01 01:00:00
+     │ reconnect_join................: int 0
+     │ disable_autojoin..............: int 0
+     │ is_away.......................: int 0
+     │ away_message..................: str ''
+     │ away_time.....................: tim 1970-01-01 01:00:00
+     │ lag...........................: int 43
+     │ lag_check_time................: buf
+     │ lag_next_check................: tim 2009-12-12 16:56:28
+     │ last_user_message.............: tim 2009-12-12 16:48:21

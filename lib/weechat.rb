@@ -29,7 +29,7 @@ module Weechat
     end
 
     def info_callback(id, info, arguments)
-      Weechat::Info.find_by_id(id).call(info, arguments)
+      Weechat::Info.find_by_id(id).call(info, arguments).to_s
     end
 
     ModifierCallbackTransformations = {

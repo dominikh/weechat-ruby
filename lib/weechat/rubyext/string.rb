@@ -20,12 +20,21 @@ class String
   def nick
     Weechat.info_get("irc_nick_from_host", self)
   end
+
+  # Removes or replaces all color codes
+  #
+  # @param [String] replacement The replacement string for color codes
+  # @return [String] A new string without color codes
   def remove_color(replacement='')
     Weechat.string_remove_color(self, replacement)
   end
   alias_method :remove_colors, :remove_color
   alias_method :strip_colors, :remove_color
 
+  # Same as {#remove_color} but changing the string in place.
+  #
+  # @param (see String#remove_color)
+  # @return [String] self
   def remove_color!(replacement='')
     self.replace(remove_color(replacement))
   end

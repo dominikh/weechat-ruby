@@ -222,6 +222,11 @@ If you want to implement your own conversion for objects (instead of
 using YAML), define an instance method `to_weechat_config` and a class
 method `from_weechat_config(value)` on the class of your object.
 
+### Own configuration files
+
+Currently there are no plans on implementing the more general
+configurations.
+
 Return values
 -------------
 

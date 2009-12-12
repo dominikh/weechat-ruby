@@ -29,7 +29,9 @@ module Weechat
     end
 
     def info_callback(id, info, arguments)
-      Weechat::Info.find_by_id(id).call(info, arguments).to_s
+      Weechat::Info.find_by_id(id).call(arguments).to_s
+    end
+
     def process_callback(id, command, code, stdout, stderr)
       code = case code
              when Weechat::WEECHAT_HOOK_PROCESS_RUNNING

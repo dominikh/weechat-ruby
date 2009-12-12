@@ -52,7 +52,7 @@ module Weechat
 
     def modifier_callback(id, modifier, modifier_data, s)
       modifier_data = Weechat::Utilities.apply_transformation(modifier, modifier_data, ModifierCallbackTransformations)
-      ret = Weechat::Modifier.find_by_id(id).call(modifier_data, Weechat::Line.parse(s))
+      ret = Weechat::Modifier.find_by_id(id).call(*modifier_data, Weechat::Line.parse(s))
       return Weechat::Utilities.apply_transformation(modifier, ret, ModifierCallbackRTransformations)
     end
   end

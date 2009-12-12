@@ -93,7 +93,7 @@ module Weechat
     end
 
     def integer_to_bool(int)
-      int == 0 ? false : true
+      int.to_i == 0 ? false : true
     end
 
     def bool_to_integer(bool)

@@ -28,6 +28,10 @@ module Weechat
       Weechat::Buffer.call_close_callback(method, buffer)
     end
 
+    def info_callback(id, info, arguments)
+      Weechat::Info.find_by_id(id).call(info, arguments)
+    end
+
     ModifierCallbackTransformations = {
       ['irc_color_decode', 'irc_color_encode'] => lambda { |v| Weechat.integer_to_bool(v) },
       [/^bar_condition_.+$/]                   => lambda { |v| Weechat::Window.new(v) },
@@ -185,3 +189,4 @@ require 'weechat/hooks.rb'
 require 'weechat/script.rb'
 require 'weechat/script/config.rb'
 require 'weechat/option.rb'
+require 'weechat/info.rb'

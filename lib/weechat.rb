@@ -30,6 +30,25 @@ module Weechat
 
     def info_callback(id, info, arguments)
       Weechat::Info.find_by_id(id).call(info, arguments).to_s
+    def process_callback(id, command, code, stdout, stderr)
+      code = case code
+             when Weechat::WEECHAT_HOOK_PROCESS_RUNNING
+               :running
+             when Weechat::WEECHAT_HOOK_PROCESS_ERROR
+               :error
+             else
+               code
+             end
+
+      process = Weechat::Process.find_by_id(id)
+      if process.collect
+        process.buffer(stdout, stderr)
+        if code == :error || code != :running
+          process.call(code, process.stdout, process.stderr)
+        end
+      else
+        Weechat::Process.find_by_id(id).call(code, stdout, stderr)
+      end
     end
 
     ModifierCallbackTransformations = {
@@ -190,3 +209,4 @@ require 'weechat/script.rb'
 require 'weechat/script/config.rb'
 require 'weechat/option.rb'
 require 'weechat/info.rb'
+require 'weechat/process.rb'

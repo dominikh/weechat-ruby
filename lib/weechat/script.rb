@@ -33,7 +33,8 @@ module Weechat
                                  'weechat_script_unload',
                                  self.script[:charset])
           if Weechat.integer_to_bool(ret)
-            self.config.populate!
+            self.config.set_script_name!(self.script[:name])
+            self.config.init!
             if respond_to?(:setup)
               return Weechat::Utilities.evaluate_call { setup }
             end

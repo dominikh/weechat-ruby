@@ -3,6 +3,39 @@ module Weechat
     class Config
       def initialize(specification)
         @specification = specification
+        @script        = nil
+      end
+
+      def init!
+        populate!
+        hook!(false) {|config, value|
+          config.gsub!(/^plugins\.var\.ruby\.#{@script}\./, '')
+          spec = @specification[config]
+          begin
+            spec[0].from_weechat_config(value)
+          rescue
+            set!(config, spec[1])
+          end
+        }
+      end
+
+      # Hook for config changes
+      def hook!(evaluate = true, &callback)
+        @specification.each do |config, spec|
+          type    = spec[0]
+          default = spec[1]
+          Weechat::Hooks::Config.new("plugins.var.ruby.#{@script}.#{config}") {|config, value|
+            Weechat.puts("config changed")
+            if evaluate
+              value = type.from_weechat_config(value) rescue default
+            end
+            callback.call(config, value)
+          }
+        end
+      end
+
+      def set_script_name!(name)
+        @script = name
       end
 
       # Resets all options to their default.
@@ -96,14 +129,14 @@ module Weechat
       end
 
       def method_missing(m, *args)
-        m = m.to_s
-        if m[-1..-1] != '='
-          if @specification.has_key?(m)
-            return get!(m)
+        ms = m.to_s
+        if ms[-1..-1] != '='
+          if @specification.has_key?(ms)
+            return get!(ms)
           end
         else
-          if @specification.has_key?(m[0..-2])
-            return set!(m[0..-2], args[0], true)
+          if @specification.has_key?(ms[0..-2])
+            return set!(ms[0..-2], args[0], true)
           end
         end
 

@@ -41,6 +41,10 @@ module Weechat
       Weechat::Hooks::Print.find_by_id(id).call(buffer, date, tags, displayed, highlight, prefix, message)
     end
 
+    def config_callback(id, option, value)
+      ret = Weechat::Hooks::Config.find_by_id(id).call(option, value)
+    end
+
     def process_callback(id, command, code, stdout, stderr)
       code = case code
              when Weechat::WEECHAT_HOOK_PROCESS_RUNNING

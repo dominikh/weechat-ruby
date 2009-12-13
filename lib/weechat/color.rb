@@ -9,6 +9,8 @@ module Weechat
     end
 
     # @param [String] name Name of the color
+    attr_reader :name
+    attr_reader :color
     def initialize(name)
       @name = name
       @color = Weechat.color(name)
@@ -21,6 +23,10 @@ module Weechat
 
     def to_weechat_config
       @name
+    end
+
+    def ==(other)
+      @name == other.name
     end
   end
 

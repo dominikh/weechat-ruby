@@ -1,6 +1,7 @@
 [x] - implemented
 [-] - indirectly implemented
 [/] - won't be implemented
+[ ] - not touched yet
 
 scripts:
 [x] register
@@ -42,7 +43,7 @@ configuration files:
 [/] config_search_section
 [/] config_new_option
 [/] config_search_option
-[/] config_string_to_boolean
+[x] config_string_to_boolean
 [/] config_option_reset
 [/] config_option_set
 [/] config_option_set_null
@@ -74,30 +75,30 @@ configuration files:
 [x] config_unset_plugin
 
 display:
-[x] prefix
+[/] prefix
 [x] color
 [x] print
-print_date_tags
-print_y
+[ ] print_date_tags
+[ ] print_y
 [x] log_print
 
 hooks:
 [x] hook_command
 [x] hook_command_run
 [x] hook_timer
-hook_fd
-hook_process
-hook_connect
-hook_print
-hook_signal
-hook_signal_send
-hook_config
-hook_completion
-hook_completion_list_add
+[ ] hook_fd
+[x] hook_process
+[ ] hook_connect
+[x] hook_print
+[ ] hook_signal
+[ ] hook_signal_send
+[x] hook_config
+[ ] hook_completion
+[ ] hook_completion_list_add
 [x] hook_modifier
-hook_modifier_exec
-hook_info
-hook_infolist
+[x] hook_modifier_exec
+[x] hook_info
+[ ] hook_infolist
 [x] unhook
 [x] unhook_all
 
@@ -120,24 +121,24 @@ windows:
 [x] window_set_title
 
 nicklist:
-nicklist_add_group
-nicklist_search_group
-nicklist_add_nick
-nicklist_search_nick
-nicklist_remove_group
-nicklist_remove_nick
-nicklist_remove_all
+[ ] nicklist_add_group
+[ ] nicklist_search_group
+[ ] nicklist_add_nick
+[ ] nicklist_search_nick
+[ ] nicklist_remove_group
+[ ] nicklist_remove_nick
+[ ] nicklist_remove_all
 
 bars:
-bar_item_search
-bar_item_new
-bar_item_update
-bar_item_remove
-bar_search
-bar_new
-bar_set
-bar_update
-bar_remove
+[ ] bar_item_search
+[ ] bar_item_new
+[ ] bar_item_update
+[ ] bar_item_remove
+[ ] bar_search
+[ ] bar_new
+[ ] bar_set
+[ ] bar_update
+[ ] bar_remove
 
 commands:
 [x] command
@@ -162,11 +163,11 @@ info_get
   [x] weechat_sharedir
 
 infolists:
-infolist_new
-infolist_new_var_integer
-infolist_new_var_string
-infolist_new_var_pointer
-infolist_new_var_time
+[ ] infolist_new
+[ ] infolist_new_var_integer
+[ ] infolist_new_var_string
+[ ] infolist_new_var_pointer
+[ ] infolist_new_var_time
 [x] infolist_get
 [x] infolist_next
 [-] infolist_prev
@@ -178,8 +179,8 @@ infolist_new_var_time
 [x] infolist_free
 
 upgrade:
-upgrade_new
-upgrade_write_object
-upgrade_read
-upgrade_close
+[ ] upgrade_new
+[ ] upgrade_write_object
+[ ] upgrade_read
+[ ] upgrade_close
 

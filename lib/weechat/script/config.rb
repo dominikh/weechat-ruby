@@ -25,7 +25,6 @@ module Weechat
           type    = spec[0]
           default = spec[1]
           Weechat::Hooks::Config.new("plugins.var.ruby.#{@script}.#{config}") {|config, value|
-            Weechat.puts("config changed")
             if evaluate
               value = type.from_weechat_config(value) rescue default
             end

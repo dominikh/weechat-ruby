@@ -21,13 +21,13 @@ module Weechat
       @frozen = true
     end
 
-    def method_missing(m, *args)
+    def method_missing(m, *args, &block)
       if @frozen
         obj = @old_obj
       else
         obj = @weechat_obj.__get_property(@property)
       end
-      ret = obj.__send__(m, *args)
+      ret = obj.__send__(m, *args, &block)
 
       if (@old_obj != obj) && @settable && !@frozen
         @weechat_obj.set_property(@property, obj)

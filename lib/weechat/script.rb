@@ -15,6 +15,7 @@ module Weechat
             :author      => 'Anonymous',
             :description => 'Empty script description',
             :charset     => '',
+            :gem_version => '0.0.1',
           }.merge(@script)
         end
 
@@ -25,6 +26,13 @@ module Weechat
 
       module InstanceMethods
         def weechat_init
+          if (self.script[:gem_version].split('.') <=> Weechat::VERSION.split('.')) > 0
+            Weechat.puts "This script ('#{self.script[:name]}') "\
+            "requires a version of the weechat ruby gem of at least #{self.script[:gem_version]}. "\
+            "You are currently using the version #{Weechat::VERSION}"
+            return Weechat::WEECHAT_RC_ERROR
+          end
+
           ret = Weechat.register(self.script[:name],
                                  self.script[:author],
                                  self.script[:version],

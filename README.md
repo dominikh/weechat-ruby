@@ -169,6 +169,8 @@ unloaded.
       :author => "Dominik Honnef <dominikho@gmx.net>", # defaults to "Anonymous"
       :version => "0.0.1",                             # defaults to "0.0.1"
       :license => 'GPL3',                              # defaults to "unlicensed"
+      :gem_version => '0.0.1',                         # defaults to "0.0.1" and specifies the
+                                                       # the minimum required version of the gem
       :description => "this serves as a test suite and example file for the weechat gem",
       # defaults to "Empty script description
     }
@@ -238,6 +240,13 @@ code that was executed last in a callback. A raised exception, on the
 other side, is unambiguous. Those exceptions live in the
 {Weechat::Exception} namespace and got the same name as the old
 constants.
+
+
+Updating the gem
+================
+
+The easiest way of updating the gem is to run `gem update weechat` and
+then, in WeeChat, `/upgrade`.
 
 
 Contributing to the project

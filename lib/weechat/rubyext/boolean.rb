@@ -1,6 +1,6 @@
 class Boolean
   def self.from_weechat_config(v)
-    v == "on" ? true : false
+    Weechat.integer_to_bool(Weechat.config_string_to_boolean(v))
   end
 end
 

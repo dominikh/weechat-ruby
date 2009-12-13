@@ -9,10 +9,20 @@ module Weechat
         return Weechat::WEECHAT_RC_OK_EAT
       rescue Weechat::Exception::WEECHAT_RC_ERROR
         return Weechat::WEECHAT_RC_ERROR
+      rescue => e
+        prefix = Weechat.prefix("error")
+
+        line1 = e.backtrace[0] + ": " + e.message + " (" + e.class.name + ")"
+        backtrace =  "    " + e.backtrace[1..-1].join("\n    ")
+
+        Weechat.puts("#{prefix}error in evaluated call: #{line1}")
+        Weechat.puts("#{prefix}#{backtrace}")
+        return Weechat::WEECHAT_RC_ERROR
       end
 
       return Weechat::WEECHAT_RC_OK
     end
+
     def self.apply_transformation(property, value, transformations)
       transformation = transformations.find {|properties, transformations|
         properties.any? {|prop|

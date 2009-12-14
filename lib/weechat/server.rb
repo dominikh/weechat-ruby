@@ -46,7 +46,7 @@ module Weechat
         alias_method :from_name, :new
       end
 
-      def self.buffers
+      def self.servers
         servers = []
         Weechat::Infolist.parse("irc_server").each do |server|
           servers << Server.new(server[:name])
@@ -54,7 +54,7 @@ module Weechat
         servers
       end
       class << self
-        alias_method :all, :buffers
+        alias_method :all, :servers
       end
 
       # TODO method for creating a new server

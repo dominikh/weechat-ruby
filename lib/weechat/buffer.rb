@@ -390,7 +390,7 @@ module Weechat
     def send(*text)
       text[0][0,0] = '/' if text[0][0..0] == '/'
       line = text.join(" ")
-      command(line)
+      Weechat.exec(line)
       line
     end
     alias_method :privmsg, :send

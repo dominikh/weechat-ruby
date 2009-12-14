@@ -14,6 +14,9 @@ module Weechat
           parts = ["", ""]
         when 1
           parts.unshift ""
+        when 2
+        else
+          parts = [parts[0], parts[1..-1].join("\t")]
         end
 
         new(*parts)
@@ -25,7 +28,6 @@ module Weechat
         new(prefix, message, h)
       end
     end
-
 
     %w(y date date_printed str_time tags_count tags displayed highlight last_read_line).each do |prop|
       define_method(prop) { details[prop] }

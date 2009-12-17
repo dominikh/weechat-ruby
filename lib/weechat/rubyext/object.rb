@@ -7,4 +7,6 @@ class Object
   def self.from_weechat_config(v)
     YAML.load(v)
   end
+
+  alias_method :__class__, :class
 end

@@ -97,6 +97,17 @@ module Weechat
   end
 
   class << self
+    def get_buffer(buffer = nil)
+      case buffer
+      when nil
+        ""
+      when :current
+        Weechat::Buffer.current
+      else
+        buffer
+      end
+    end
+
     def exec(command, buffer=nil)
       Weechat.command(buffer.to_s, command)
     end
@@ -104,14 +115,7 @@ module Weechat
     alias_method :execute, :exec
 
     def puts(text, buffer = nil)
-      buffer = case buffer
-               when nil
-                 ""
-               when :current
-                 Weechat::Buffer.current
-               else
-                 buffer
-               end
+      buffer = get_buffer(buffer)
       Weechat.print(buffer.to_s, text.to_s)
       nil # to mimic Kernel::puts
     end

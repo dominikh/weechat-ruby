@@ -294,7 +294,7 @@ module Weechat
         end
 
         get_infolist.first.each do |property, value|
-          prop = __get_property(property)
+          prop = self.class.apply_transformation(property, value)
           h[property] = prop
         end
 

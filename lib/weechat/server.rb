@@ -63,6 +63,13 @@ module Weechat
         alias_method :all, :servers
       end
 
+      def channels
+        channels = []
+        Weechat::Infolist.parse("irc_channel", "", @name).each do |channel|
+          channels << IRC::Channel.new(channel[:buffer])
+        end
+        channels
+      end
 
       def connect
         return false if connected?

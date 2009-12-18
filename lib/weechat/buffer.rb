@@ -357,9 +357,15 @@ module Weechat
     #
     # @return [Boolean]
     def channel?
-      # get all servers
-      # get all channels of all servers
-      # return true of pointer equal
+      self.localvar_type == "channel"
+    end
+
+    # Returns the channel associated with the buffer.
+    #
+    # @raise [Exception::NotAChannel]
+    # @return [IRC::Channel]
+    def channel
+      IRC::Channel.new(self)
     end
 
     # Send a command to the current buffer.

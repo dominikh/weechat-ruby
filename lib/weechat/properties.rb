@@ -268,7 +268,7 @@ module Weechat
         when :localvar
           property =~ /^localvar_.+$/
         when :infolist
-          get_infolist.first[property.to_sym]
+          get_infolist.first.has_key?(property.to_sym)
         end
       end
 

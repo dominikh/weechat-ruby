@@ -27,5 +27,6 @@ module Weechat
     class WEECHAT_RC_OK < ::Exception; end
     class WEECHAT_RC_ERROR < ::Exception; end
     class WEECHAT_RC_OK_EAT < ::Exception; end
+    class UnknownServer < RuntimeError; end
   end
 end

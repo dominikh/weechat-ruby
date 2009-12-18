@@ -4,8 +4,10 @@ require 'date'
 module Weechat
   module IRC
     class Server
+      extend Weechat::Properties
+
       attr_reader :name
-      PROCESSORS = {
+      @transformations = {
         [:buffer] => lambda {|b|
           if b.empty?
             nil
@@ -13,79 +15,69 @@ module Weechat
             Weechat::Buffer.new(b)
           end
         },
-        [:ipv6, :ssl, :ssl_verify,
-         :autoconnect, :autoreconnect,
-         :autorejoin, :temp_server,
-         :is_connected, :ssl_connected,
-         :reconnect_join, :disable_autojoin,
-         :is_away] => lambda {|i| i == 0 ? false : true },
-        [:reconnect_start, :command_time,
-         :away_time, :lag_next_check,
-         :last_user_message] => lambda {|v| DateTime.parse(v)},
-      }
+        [:ipv6, :ssl, :ssl_verify, :autoconnect, :autoreconnect,
+         :autorejoin, :temp_server, :is_connected, :ssl_connected,
+         :reconnect_join, :disable_autojoin, :is_away] => lambda {|v|
+          Weechat.integer_to_bool(v)
+        },
+        [:reconnect_start, :command_time, :away_time, :lag_next_check,
+         :last_user_message] => lambda {|v| Date.parse(v) },
+        [:nicks] => lambda {|v| v.split(",") }
+      }.freeze
 
-      MAPPINGS = {
+      @mappings = {
+        :ipv6? => :ipv6,
+        :ssl?  => :ssl,
         :autoconnect? => :autoconnect,
         :autoreconnect? => :autoreconnect,
         :autorejoin? => :autorejoin,
         :temp_server? => :temp_server,
         :connected? => :is_connected,
         :ssl_connected? => :ssl_connected,
-        :reconnect_join? => :reconnect_join,
-      }
+        :join_on_reconnect? => :reconnect_join,
+        :away? => :is_away,
+      }.freeze
+
+      init_properties
 
       def autojoin?
         !disable_autojoin
       end
 
+      attr_reader :ptr
       def initialize(name)
-        @name = name
+        @ptr = @name = name.to_s
+        raise Exception::UnknownServer, name if get_infolist.empty?
       end
 
       class << self
         alias_method :from_name, :new
+
+        def servers
+          servers = []
+          Weechat::Infolist.parse("irc_server").each do |server|
+            servers << Server.new(server[:name])
+          end
+          servers
+        end
+        alias_method :all, :servers
       end
 
-      def self.servers
-        servers = []
-        Weechat::Infolist.parse("irc_server").each do |server|
-          servers << Server.new(server[:name])
-        end
-        servers
+
+      def connect
+        return false if connected?
+        Weechat.exec("/connect #{@name}")
       end
-      class << self
-        alias_method :all, :servers
+
+      def disconnect
+        return false if not connected?
+        self.buffer.exec("/disconnect #{@name}")
       end
 
       # TODO method for creating a new server
 
-      def data
-        Weechat::Infolist.parse("irc_server", "", @name).first
-      end
-
-      def respond_to?(m)
-        if data.has_key?(m.to_sym)
-          true
-        else
-          super
-        end
-      end
-
-      def method_missing(m, *args)
-        m = MAPPINGS[m] || m
-        properties = data
-        if properties.has_key?(m) and args.size == 0
-          v = properties[m]
-          PROCESSORS.each do |key, value|
-            if key.include?(m)
-              v = value.call(v)
-              break
-            end
-          end
-          return v
-        else
-          super
-        end
+      def get_infolist
+        Weechat::Infolist.parse("irc_server", "", @name)
       end
     end
   end

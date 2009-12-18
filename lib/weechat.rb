@@ -120,6 +120,12 @@ module Weechat
       nil # to mimic Kernel::puts
     end
 
+    def puts_y(text, line, buffer = nil)
+      buffer = get_buffer(buffer)
+      Weechat.print_y(text.to_s, line, buffer.to_s)
+      nil # to mimic Kernel::puts
+    end
+
     def p(object, buffer = nil)
       self.puts(object.inspect, buffer)
     end

@@ -90,7 +90,7 @@ module Weechat
       # @see #get_infolist_property
       # @see #set_property
       def get_property(property)
-        raise Exception::UnknownProperty.new(property) unless valid_property?(property)
+        raise Exception::UnknownProperty, property unless valid_property?(property)
         case ret = __get_property(property)
         when true, false, nil
           ret
@@ -109,7 +109,7 @@ module Weechat
         elsif valid_property?(property, :infolist)
           v = get_infolist_property(property)
         else
-          raise Exception::UnknownProperty.new(property)
+          raise Exception::UnknownProperty, property
         end
 
         return self.class.apply_transformation(property, v)
@@ -125,7 +125,7 @@ module Weechat
       # @see #get_infolist_property
       def get_integer_property(property)
         property = property.to_s
-        raise Exception::UnknownProperty.new(property) unless valid_property?(property, :integer)
+        raise Exception::UnknownProperty, property unless valid_property?(property, :integer)
         get_integer(property)
       end
 
@@ -149,7 +149,7 @@ module Weechat
       # @see #set_string_property
       def get_string_property(property)
         property = property.to_s
-        raise Exception::UnknownProperty.new(property) unless valid_property?(property, :string)
+        raise Exception::UnknownProperty, property unless valid_property?(property, :string)
         get_string(property)
       end
 
@@ -181,7 +181,7 @@ module Weechat
       def get_infolist_property(property)
         property = property.to_sym
         values = get_infolist.first
-        raise Exception::UnknownProperty.new(property.to_s) unless values[property]
+        raise Exception::UnknownProperty, property.to_s unless values.has_key?(property)
         values[property]
       end
 
@@ -207,7 +207,7 @@ module Weechat
       # @see #set
       def set_property(property, v, freeze = false)
         property = property.to_s
-        raise Exception::UnsettableProperty.new(property) unless settable_property?(property)
+        raise Exception::UnsettableProperty, property unless settable_property?(property)
         v = Utilities.apply_transformation(property, v, self.class.rtransformations)
 
         set(property, v)
@@ -228,7 +228,7 @@ module Weechat
       # @see #set
       def set_string_property(property, v)
         property = property.to_s
-        raise Exception::UnsettableProperty.new(property) unless settable_property?(property)
+        raise Exception::UnsettableProperty, property unless settable_property?(property)
         set(property, v)
       end
 

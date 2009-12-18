@@ -159,11 +159,11 @@ module Weechat
       },
       [:notify] => lambda {|v|
         i = NOTIFY_LEVELS.index(v)
-        i or raise Exception::InvalidPropertyValue.new(v.to_s)
+        i or raise Exception::InvalidPropertyValue, v.to_s
       },
       [:type] => lambda {|v|
         v = v.to_s
-        raise Exception::InvalidPropertyValue.new(v) if !["formatted", "free"].include?(v)
+        raise Exception::InvalidPropertyValue, v if !["formatted", "free"].include?(v)
         v
       },
     }.freeze
@@ -316,7 +316,7 @@ module Weechat
         id = @callbacks.size - 1
         ptr = Weechat.buffer_new(name.to_s, "input_callback", id.to_s, "close_callback", id.to_s)
         if ptr.empty?
-          raise Exception::DuplicateBufferName(name.to_s)
+          raise Exception::DuplicateBufferName, name.to_s
         else
           @callbacks[-1][:ptr] = ptr
           Buffer.new(ptr)

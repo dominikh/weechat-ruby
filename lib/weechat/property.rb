@@ -3,18 +3,21 @@ module Weechat
     @properties = [] # we can't use a Hash because hashing
                      # blankslate... breaks things
 
-    
-    def self.properties
-      @properties
-    end
 
     def initialize(weechat_obj, property)
-      self.__class__.properties << [weechat_obj.ptr, property, self]
       @old_obj     = weechat_obj.__get_property(property)
       @weechat_obj = weechat_obj
       @property    = property
       @settable    = weechat_obj.settable_property?(property)
       @frozen      = false
+    end
+
+    def __weechat_obj__
+      @weechat_obj
+    end
+
+    def __property__
+      @property
     end
 
     def __freeze__
@@ -40,7 +43,7 @@ module Weechat
           @old_obj = obj
         end
       end
-      
+
       ret
     end
   end

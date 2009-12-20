@@ -212,9 +212,9 @@ module Weechat
 
         set(property, v)
         if freeze
-          Property.properties.each do |prop|
-            if prop[0..1] == [@ptr, property]
-              prop[2].__freeze__
+          ObjectSpace.each_object(Weechat::Property).each do |prop|
+            if prop.__weechat_obj__.ptr == @ptr and prop.__property__ == property
+              prop.__freeze__
             end
           end
         end

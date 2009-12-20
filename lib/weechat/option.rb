@@ -4,16 +4,19 @@ module Weechat
     # blankslate... breaks things
 
 
-    def self.options
-      @options
+    def initialize(config, option)
+      @old_obj     = config.__get(option)
+      @config      = config
+      @option      = option
+      @frozen      = false
     end
 
-    def initialize(config, option)
-      self.__class__.options << [config, option, self]
-      @old_obj     = config.__get(option)
-      @config = config
-      @option = option
-      @frozen      = false
+    def __config__
+      @config
+    end
+
+    def __option__
+      @option
     end
 
     def __freeze__

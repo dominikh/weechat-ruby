@@ -119,9 +119,9 @@ module Weechat
         value = value.to_weechat_config
         Weechat.config_set_plugin(option.to_s, value)
         if freeze
-          Option.options.each do |opt|
-            if opt[0..1] == [self, option]
-              opt[2].__freeze__
+          ObjectSpace.each_object(Weechat::Option).each do |opt|
+            if opt.__config__ == self and opt.__option__ == option
+              opt.__freeze__
             end
           end
         end

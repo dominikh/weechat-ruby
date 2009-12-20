@@ -46,6 +46,15 @@ module Weechat
         join(password)
       end
       alias_method :cycle, :rejoin
+
+      def nicks
+        Weechat::Infolist.parse("irc_nick", "",
+                                "#{self.server.name},#{self.name}").map {|user|
+          IRC::User.new(user.merge({:channel => self}))
+        }
+      end
+      alias_method :users, :nicks
+
       def command(*parts)
         @buffer.command(*parts)
       end

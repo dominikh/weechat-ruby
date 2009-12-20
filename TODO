@@ -79,7 +79,7 @@ display:
 [x] color
 [x] print
 [ ] print_date_tags
-[ ] print_y
+[x] print_y
 [x] log_print
 
 hooks:
@@ -163,11 +163,11 @@ info_get
   [x] weechat_sharedir
 
 infolists:
-[ ] infolist_new
-[ ] infolist_new_var_integer
-[ ] infolist_new_var_string
-[ ] infolist_new_var_pointer
-[ ] infolist_new_var_time
+[/] infolist_new
+[/] infolist_new_var_integer
+[/] infolist_new_var_string
+[/] infolist_new_var_pointer
+[/] infolist_new_var_time
 [x] infolist_get
 [x] infolist_next
 [-] infolist_prev
@@ -184,3 +184,5 @@ upgrade:
 [ ] upgrade_read
 [ ] upgrade_close
 
+Functionality:
+[x] if a buffer is a channel, get nicks, usercount, topic, etc

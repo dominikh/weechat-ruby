@@ -37,13 +37,13 @@ module Weechat
         @buffer.command("/part #{self.name} #{reason}")
       end
 
-      def join
-        @buffer.command("/join #{self.name}")
+      def join(password = "")
+        @buffer.command("/join #{self.name} #{password}")
       end
 
-      def rejoin(reason="")
+      def rejoin(password = "")
         part(reason)
-        join
+        join(password)
       end
       alias_method :cycle, :rejoin
     end

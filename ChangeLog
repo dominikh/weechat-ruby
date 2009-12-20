@@ -1,5 +1,8 @@
 2009-12-21  Dominik Honnef  <dominikho@gmx.net>
 
+	* Rakefile: bumped version to 0.0.2
+	* lib/weechat.rb (Weechat): bumped version to 0.0.2
+
 	* lib/weechat/channel.rb (Weechat::IRC::Channel#nicks): added support for users
 	* lib/weechat/host.rb (Weechat::IRC::Host): added support for users
 	* lib/weechat/user.rb (Weechat::IRC::User): added support for users

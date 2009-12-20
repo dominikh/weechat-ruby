@@ -1,5 +1,8 @@
 2009-12-21  Dominik Honnef  <dominikho@gmx.net>
 
+	* lib/weechat/script.rb (Weechat::Script::Skeleton::InstanceMethods#weechat_init):
+	fixed version comparison
+
 	* Rakefile: bumped version to 0.0.2
 	* lib/weechat.rb (Weechat): bumped version to 0.0.2
 

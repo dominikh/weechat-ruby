@@ -26,7 +26,7 @@ module Weechat
 
       module InstanceMethods
         def weechat_init
-          if (self.script[:gem_version].split('.') <=> Weechat::VERSION.split('.')) > 0
+          if (self.script[:gem_version].split('.').map{|i| i.to_i} <=> Weechat::VERSION.split('.').map{|i| i.to_i}) > 0
             Weechat.puts "This script ('#{self.script[:name]}') "\
             "requires a version of the weechat ruby gem of at least #{self.script[:gem_version]}. "\
             "You are currently using the version #{Weechat::VERSION}"

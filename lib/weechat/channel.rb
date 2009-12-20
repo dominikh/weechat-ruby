@@ -46,6 +46,18 @@ module Weechat
         join(password)
       end
       alias_method :cycle, :rejoin
+      def command(*parts)
+        @buffer.command(*parts)
+      end
+      alias_method :send_command, :command
+      alias_method :exec, :command
+      alias_method :execute, :command
+
+      def send(*text)
+        @buffer.send(*text)
+      end
+      alias_method :privmsg, :send
+      alias_method :say, :send
     end
   end
 end

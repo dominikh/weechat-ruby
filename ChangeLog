@@ -1,5 +1,9 @@
 2009-12-21  Dominik Honnef  <dominikho@gmx.net>
 
+	* lib/weechat/info.rb: fixed comments
+	* lib/weechat/command.rb: fixed comments
+	* lib/weechat/modifier.rb: fixed comments
+
 	* lib/weechat/script.rb (Weechat::Script::Skeleton::InstanceMethods#weechat_init):
 	fixed version comparison
 

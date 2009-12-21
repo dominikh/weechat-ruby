@@ -1,6 +1,4 @@
 module Weechat
-  # Note: As opposed to plain WeeChat, we properly parse arguments
-  # given to a command, like a shell would.
   class Info < Hook
     attr_reader :name
     attr_reader :description

@@ -1,6 +1,4 @@
 module Weechat
-  # Note: As opposed to plain WeeChat, we properly parse arguments
-  # given to a command, like a shell would.
   class Modifier < Hook
     attr_reader :modifier
     def initialize(modifier, &callback)

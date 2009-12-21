@@ -1,5 +1,7 @@
 2009-12-21  Dominik Honnef  <dominikho@gmx.net>
 
+	* lib/weechat/line.rb (Weechat::Line#parse): fix line parsing
+
 	* lib/weechat/info.rb: fixed comments
 	* lib/weechat/command.rb: fixed comments
 	* lib/weechat/modifier.rb: fixed comments

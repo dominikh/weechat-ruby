@@ -13,7 +13,11 @@ module Weechat
         when 0
           parts = ["", ""]
         when 1
-          parts.unshift ""
+          if line =~ /\t(\t+)\Z/
+            parts << $1
+          else
+            parts.unshift ""
+          end
         when 2
         else
           parts = [parts[0], parts[1..-1].join("\t")]

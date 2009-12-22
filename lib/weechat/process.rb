@@ -12,7 +12,7 @@ module Weechat
       @command  = command
       @collect  = collect
       @stdout, @stderr = [], []
-      @callback = Callback.new(callback)
+      @callback = EvaluatedCallback.new(callback)
       @ptr      = Weechat.hook_process(command, timeout, "process_callback", id.to_s)
     end
 

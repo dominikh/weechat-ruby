@@ -29,7 +29,7 @@ module Weechat
     end
 
     def callback=(callback)
-      @callback = Callback.new(callback)
+      @callback = EvaluatedCallback.new(callback)
     end
 
     class << self

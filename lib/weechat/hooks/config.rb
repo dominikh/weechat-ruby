@@ -3,7 +3,7 @@ module Weechat
     class Config < Hook
       def initialize(option, &callback)
         super
-        @callback = Callback.new(callback)
+        @callback = EvaluatedCallback.new(callback)
         @ptr      = Weechat.hook_config(option, "config_callback", id.to_s)
       end
     end

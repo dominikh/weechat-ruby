@@ -310,8 +310,8 @@ module Weechat
       # @raise [Exception::DuplicateBufferName] In case a buffer with that name already exists
       def create(name, input_callback, close_callback)
         @callbacks << {
-          :input_callback => Callback.new(input_callback),
-          :close_callback => Callback.new(close_callback),
+          :input_callback => EvaluatedCallback.new(input_callback),
+          :close_callback => EvaluatedCallback.new(close_callback),
         }
         id = @callbacks.size - 1
         ptr = Weechat.buffer_new(name.to_s, "input_callback", id.to_s, "close_callback", id.to_s)

@@ -6,7 +6,7 @@ module Weechat
     def initialize(interval, max=0, align=0, &block)
       super
       @remaining= nil
-      @callback = Callback.new(block)
+      @callback = EvaluatedCallback.new(block)
       @interval = interval
       @align    = align
       @max      = max

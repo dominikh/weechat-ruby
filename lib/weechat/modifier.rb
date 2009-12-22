@@ -4,9 +4,7 @@ module Weechat
     def initialize(modifier, &callback)
       super
       @modifier = modifier.to_s
-      @callback         = callback # we do not use the Callback class
-                                   # here because we need the return
-                                   # value of the callback
+      @callback         = Callback.new(callback)
       @ptr              = Weechat.hook_modifier(modifier, "modifier_callback", id.to_s)
     end
 

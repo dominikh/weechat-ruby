@@ -44,7 +44,7 @@ module Weechat
       end
 
       @command[0..0] = '' if @command[0..0] == '/'
-      @callback         = Callback.new(callback)
+      @callback         = EvaluatedCallback.new(callback)
       @ptr              = Weechat.hook_command(@command,
                                        @description.to_s,
                                        @args.to_s,

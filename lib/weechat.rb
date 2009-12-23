@@ -41,6 +41,26 @@ module Weechat
       Weechat::Hooks::Print.find_by_id(id).call(buffer, date, tags, displayed, highlight, prefix, message)
     end
 
+    # TODO add IRC parser
+    # TODO add support for filters
+    # TODO add support for ignores
+    # TODO add support for infolists by pointer
+    #
+    SignalCallbackTransformations = {
+      [/irc_(channel|pv)_opened/, /^logger_(start|stop|backlog)$/,
+       /^buffer_(closing|closed|lines_hidden|moved|opened|renamed|switch)$/,
+       /^buffer_(title|type)_changed$/,
+       /^buffer_localvar_(added|changed|removed)$/] => lambda { |v| Weechat::Buffer.new(v) },
+      [/irc_server_(connecting|connected|disconnected)/] => lambda { |v| Weechat::Server.new(v) },
+      [/weechat_(highlight|pv)/] => lambda { |v| Weechat::Line.parse(v) },
+      [/window_(scrolled|unzooming|unzoomed|zooming|zoomed)/] => lambda { |v| Weechat::Window.new(v) },
+    }
+
+    def signal_callback(id, signal, data)
+      data = Weechat::Utilities.apply_transformation(signal, data, SignalCallbackTransformations)
+      Weechat::Hooks::Signal.find_by_id(id).call(signal, data)
+    end
+
     def config_callback(id, option, value)
       ret = Weechat::Hooks::Config.find_by_id(id).call(option, value)
     end

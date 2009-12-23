@@ -12,6 +12,19 @@ module Weechat
 
       init_properties
 
+      class << self
+        def channels
+          Weechat::Buffer.all.select {|b| b.channel?}.map{|b| b.channel}
+        end
+        alias_method :all, :channels
+
+        def find(server, channel)
+          server  = server.name if server.respond_to?(:name)
+          channel = channel.name if channel.respond_to?(:name)
+          Weechat::Buffer.find("irc", "#{server}.#{channel}")
+        end
+      end
+
       attr_reader :buffer
       def initialize(buffer)
         @buffer = Buffer.new(buffer.to_s)

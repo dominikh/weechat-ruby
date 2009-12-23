@@ -6,7 +6,7 @@ end
 require 'pp'
 
 module Weechat
-  VERSION = "0.0.2"
+  VERSION = "0.0.3"
   module Helper
     def command_callback(id, buffer, args)
       Weechat::Command.find_by_id(id).call(Weechat::Buffer.new(buffer), args)

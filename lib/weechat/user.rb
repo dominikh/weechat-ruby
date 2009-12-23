@@ -19,6 +19,12 @@ module Weechat
       alias_method :opped?, :op?
       alias_method :voiced?, :voice?
 
+      def ==(other)
+        @name == other.name && @host == other.host && @channel == other.channel
+      end
+      alias_method :eql?, "=="
+      alias_method :equal?, :eql?
+
       def op
         @channel.exec("/op #@name")
       end

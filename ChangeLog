@@ -1,3 +1,16 @@
+2009-12-23  Dominik Honnef  <dominikho@gmx.net>
+
+
+	* lib/weechat/hook.rb (Weechat::Hook)
+	(Weechat::Hook::compute_free_id): rewrote uid generation
+
+	* lib/weechat.rb (Weechat::Helper#modifier_callback): added support for specific modifiers
+	* lib/weechat/modifier.rb (Weechat::Modifier::inherited): added support for specific modifiers
+	* lib/weechat/modifier.rb (Weechat::Modifiers::Print): added Print modifier
+
+
+	* lib/weechat/channel.rb (Weechat::IRC::Channel#get_infolist): fixed parsing
+
 2009-12-21  Dominik Honnef  <dominikho@gmx.net>
 
 	* lib/weechat/line.rb (Weechat::Line#parse): fix line parsing

@@ -143,6 +143,7 @@ module Weechat
       [:notify] => lambda {|v| NOTIFY_LEVELS[v] },
       [:text_search] => lambda {|v| [:none, :backward, :foward][v] },
       [:type] => lambda {|v| [:formatted, :free][v]},
+      [:plugin] => lambda {|v| Weechat::Plugin.new(v)},
     }.freeze
 
     # The transformation procedures that get applied to values before they
@@ -188,6 +189,13 @@ module Weechat
       # @see #initialize
       def from_ptr(ptr)
         self.new(ptr)
+      end
+
+      def find(plugin, name)
+        plugin = Weechat::Plugin.from_name(plugin) if plugin.is_a?(String)
+        buffers.find {|buffer|
+          buffer.name == name && buffer.plugin == plugin
+        }
       end
 
       # Returns a list of all buffers

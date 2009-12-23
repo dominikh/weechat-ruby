@@ -22,11 +22,11 @@ module Weechat
       end
 
       def get_infolist
-        Weechat::IRC::Server.all.map{|server|
-          Weechat::Infolist.parse("irc_channel", "", server.name).find{|channel|
-            channel[:buffer] == @ptr
-          }
-        }.compact
+        list = Weechat::Infolist.parse("irc_channel", "", server.name).select{|channel|
+          channel[:buffer] == @ptr
+        }
+
+        list.empty? ? [{}] : list
       end
 
       def server

@@ -89,9 +89,12 @@ module Weechat
     }
 
     def modifier_callback(id, modifier, modifier_data, s)
+      klass = Weechat::Modifiers::Mappings[modifier] || Weechat::Modifier
       modifier_data = Weechat::Utilities.apply_transformation(modifier, modifier_data, ModifierCallbackTransformations)
       args = modifier_data + [Weechat::Line.parse(s)]
-      ret = Weechat::Modifier.find_by_id(id).call(*args)
+      callback = klass.find_by_id(id)
+      callback ||= Weechat::Modifier.find_by_id(id)
+      ret = callback.call(*args)
       return Weechat::Utilities.apply_transformation(modifier, ret, ModifierCallbackRTransformations).to_s
     end
   end

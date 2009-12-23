@@ -3,17 +3,21 @@ module Weechat
   # callback, which then calls the appropriate callback.
   class Hook
     include Weechat::Pointer
+    @@unique_id = 0
 
     @hook_classes = [self]
-    def self.inherited(by)
-      by.init
-      @hook_classes << by
-    end
+    class << self
+      def inherited(by)
+        by.init
+        @hook_classes << by
+      end
 
-    def self.hooks; @hooks; end
+      def hooks; @hooks; end
+      alias_method :all, :hooks
 
-    def self.init
-      @hooks = {}
+      def init
+        @hooks = {}
+      end
     end
 
     init
@@ -78,8 +82,9 @@ module Weechat
       @hooks[id.to_i]
     end
 
+    # Returns a new, unique ID.
     def self.compute_free_id
-      (@hooks.keys.max || -1) + 1
+      @@unique_id += 1
     end
 
     def self.register(hook)

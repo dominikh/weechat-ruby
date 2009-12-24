@@ -1,5 +1,7 @@
 2009-12-24  Dominik Honnef  <dominikho@gmx.net>
 
+	* lib/weechat/hooks/signal.rb (Weechat::Hooks::Signal.send): implemented weechat_hook_signal_send
+
 	* lib/weechat.rb (Weechat): bumped version to 0.0.4
 
 	* lib/weechat/properties.rb (Weechat::Properties::InstanceMethods#get_infolist)

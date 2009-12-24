@@ -91,7 +91,7 @@ hooks:
 [ ] hook_connect
 [x] hook_print
 [x] hook_signal
-[ ] hook_signal_send
+[x] hook_signal_send
 [x] hook_config
 [ ] hook_completion
 [ ] hook_completion_list_add

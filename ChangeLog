@@ -1,5 +1,13 @@
 2009-12-24  Dominik Honnef  <dominikho@gmx.net>
 
+	* lib/weechat.rb (Weechat): bumped version to 0.0.4
+
+	* lib/weechat/properties.rb (Weechat::Properties::InstanceMethods#get_infolist)
+	(Weechat::Properties::InstanceMethods#get_infolist_property)
+	(Weechat::Properties::InstanceMethods#valid_property): more specific infolist querying; performance tweaks
+	* lib/weechat/infolist.rb (Weechat::Infolist.parse): more specific infolist querying; performance tweaks
+	* lib/weechat/channel.rb (Weechat::IRC::Channel#get_infolist): more specific infolist querying; performance tweaks
+
 	* lib/weechat.rb (Weechat): bumped version to 0.0.3
 
 	* lib/weechat/buffer.rb (Weechat::Buffer.find): added method for finding buffers

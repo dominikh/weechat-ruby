@@ -1,7 +1,7 @@
 require 'rubygems'
 require 'rake/gempackagetask'
 
-VERSION = "0.0.3"
+VERSION = "0.0.4"
 
 spec = Gem::Specification.new do |s|
   s.name              = "weechat"

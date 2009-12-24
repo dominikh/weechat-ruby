@@ -90,7 +90,7 @@ hooks:
 [x] hook_process
 [ ] hook_connect
 [x] hook_print
-[ ] hook_signal
+[x] hook_signal
 [ ] hook_signal_send
 [x] hook_config
 [ ] hook_completion

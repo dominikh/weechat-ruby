@@ -34,11 +34,8 @@ module Weechat
         end
       end
 
-      def get_infolist
-        list = Weechat::Infolist.parse("irc_channel", "", server.name).select{|channel|
-          channel[:buffer] == @ptr
-        }
-
+      def get_infolist(*fields)
+        list = Weechat::Infolist.parse("irc_channel", "", server.name, {:buffer => [:pointer, @ptr]}, *fields)
         list.empty? ? [{}] : list
       end
 

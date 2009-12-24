@@ -167,8 +167,8 @@ module Weechat
       # Returns a hash representation of the associated infolist.
       #
       # @return [Hash{Symbol => Object}] All properties in the infolist
-      def get_infolist
-        Weechat::Infolist.parse(self.class.type, @ptr)
+      def get_infolist(*fields)
+        Weechat::Infolist.parse(self.class.type, @ptr, {}, fields)
       end
 
       # Returns a property obtained by an infolist.
@@ -180,7 +180,7 @@ module Weechat
       # @see #get_integer_property
       def get_infolist_property(property)
         property = property.to_sym
-        values = get_infolist.first
+        values = get_infolist(property).first
         raise Exception::UnknownProperty, property.to_s unless values.has_key?(property)
         values[property]
       end
@@ -268,7 +268,8 @@ module Weechat
         when :localvar
           property =~ /^localvar_.+$/
         when :infolist
-          get_infolist.first.has_key?(property.to_sym)
+          sproperty = property.to_sym
+          get_infolist(sproperty).first.has_key?(sproperty)
         end
       end
 

@@ -9,11 +9,11 @@ module Weechat
   VERSION = "0.0.4"
   module Helper
     def command_callback(id, buffer, args)
-      Weechat::Command.find_by_id(id).call(Weechat::Buffer.new(buffer), args)
+      Weechat::Command.find_by_id(id).call(Weechat::Buffer.from_ptr(buffer), args)
     end
 
     def command_run_callback(id, buffer, command)
-      Weechat::Hooks::CommandRunHook.find_by_id(id).call(Weechat::Buffer.new(buffer), command)
+      Weechat::Hooks::CommandRunHook.find_by_id(id).call(Weechat::Buffer.from_ptr(buffer), command)
     end
 
     def timer_callback(id, remaining)
@@ -33,7 +33,7 @@ module Weechat
     end
 
     def print_callback(id, buffer, date, tags, displayed, highlight, prefix, message)
-      buffer    = Weechat::Buffer.new(buffer)
+      buffer    = Weechat::Buffer.from_ptr(buffer)
       date      = Time.at(date.to_i)
       tags      = tags.split(",")
       displayed = Weechat.integer_to_bool(displayed)
@@ -50,10 +50,10 @@ module Weechat
       [/irc_(channel|pv)_opened/, /^logger_(start|stop|backlog)$/,
        /^buffer_(closing|closed|lines_hidden|moved|opened|renamed|switch)$/,
        /^buffer_(title|type)_changed$/,
-       /^buffer_localvar_(added|changed|removed)$/] => lambda { |v| Weechat::Buffer.new(v) },
-      [/irc_server_(connecting|connected|disconnected)/] => lambda { |v| Weechat::Server.new(v) },
+       /^buffer_localvar_(added|changed|removed)$/] => lambda { |v| Weechat::Buffer.from_ptr(v) },
+      [/irc_server_(connecting|connected|disconnected)/] => lambda { |v| Weechat::Server.from_name(v) },
       [/weechat_(highlight|pv)/] => lambda { |v| Weechat::Line.parse(v) },
-      [/window_(scrolled|unzooming|unzoomed|zooming|zoomed)/] => lambda { |v| Weechat::Window.new(v) },
+      [/window_(scrolled|unzooming|unzoomed|zooming|zoomed)/] => lambda { |v| Weechat::Window.from_ptr(v) },
     }
 
     def signal_callback(id, signal, data)
@@ -88,9 +88,9 @@ module Weechat
 
     ModifierCallbackTransformations = {
       ['irc_color_decode', 'irc_color_encode'] => lambda { |v| Weechat.integer_to_bool(v) },
-      [/^bar_condition_.+$/]                   => lambda { |v| Weechat::Window.new(v) },
+      [/^bar_condition_.+$/]                   => lambda { |v| Weechat::Window.from_ptr(v) },
       ["input_text_content", "input_text_display",
-       "input_text_display_with_cursor"]       => lambda { |v| Weechat::Buffer.new(v) },
+       "input_text_display_with_cursor"]       => lambda { |v| Weechat::Buffer.from_ptr(v) },
       ["weechat_print"]                        => lambda { |v|
         parts = v.split(";")
         parts[0] = Weechat::Plugin.find(parts[0])

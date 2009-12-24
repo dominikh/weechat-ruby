@@ -1,14 +1,22 @@
 module Weechat
   module Pointer
+    module ClassMethods
+      def from_ptr(ptr)
+        o = allocate
+        o.instance_variable_set(:@ptr, ptr)
+        o
+      end
+    end
+
+    def self.included(by)
+      by.extend Weechat::Pointer::ClassMethods
+    end
+
     attr_reader :ptr
     alias_method :pointer, :ptr
 
     def to_s
       @ptr
-    end
-
-    def initialize(ptr)
-      @ptr = ptr
     end
 
     def ==(other)

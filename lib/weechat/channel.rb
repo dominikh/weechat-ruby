@@ -27,7 +27,7 @@ module Weechat
 
       attr_reader :buffer
       def initialize(buffer)
-        @buffer = Buffer.new(buffer.to_s)
+        @buffer = Buffer.from_ptr(buffer.to_s)
         @ptr    = @buffer.ptr
         if not ["channel"].include?(@buffer.localvar_type)
           raise Exception::NotAChannel, buffer.ptr
@@ -40,7 +40,7 @@ module Weechat
       end
 
       def server
-        IRC::Server.new(@buffer.localvar_server)
+        IRC::Server.from_name(@buffer.localvar_server)
       end
 
       def part(reason="")

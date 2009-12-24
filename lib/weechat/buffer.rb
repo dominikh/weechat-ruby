@@ -3,10 +3,10 @@ module Weechat
   #
   # == Creating new buffers
   #
-  # Using {Buffer.create}, one can create new buffers which even
+  # Using {Buffer.new}, one can create new buffers which even
   # respond to input and closing using hooks (procs or methods or
   # anything that responds to #call).
-  #   Buffer.create("my buffer",
+  #   Buffer.new("my buffer",
   #     lambda {|b, i|
   #       # work with input
   #     },
@@ -185,12 +185,6 @@ module Weechat
     init_properties
 
     class << self
-      # @return [Buffer]
-      # @see #initialize
-      def from_ptr(ptr)
-        self.new(ptr)
-      end
-
       def find(plugin, name)
         plugin = Weechat::Plugin.from_name(plugin) if plugin.is_a?(String)
         buffers.find {|buffer|
@@ -205,7 +199,7 @@ module Weechat
       def buffers
         buffers = []
         Weechat::Infolist.parse("buffer").each do |buffer|
-          buffers << Buffer.new(buffer[:pointer])
+          buffers << Buffer.from_ptr(buffer[:pointer])
         end
         buffers
       end
@@ -227,7 +221,7 @@ module Weechat
         if ptr == ""
           nil
         else
-          Buffer.new(ptr)
+          Buffer.from_ptr(ptr)
         end
       end
       alias_method :find, :find_by_name
@@ -244,14 +238,10 @@ module Weechat
           pattern = Regexp.new("^#{pattern}$")
         end
 
-        Weechat::Infolist.parse("buffer").select {|h|
+        Weechat::Infolist.parse("buffer", "", "", properties, :name, :pointer).select {|h|
           h[:name] =~ pattern
         }.map {|h|
-          Buffer.new(h[:pointer])
-        }.select {|b|
-          properties.all? {|key, value|
-            b.__send__(key) == value
-          }
+          Buffer.from_ptr(h[:pointer])
         }
       end
 
@@ -264,7 +254,7 @@ module Weechat
       # @see .call_close_callback
       # @private
       def call_input_callback(id, buffer, input)
-        buffer = Buffer.new(buffer)
+        buffer = Buffer.from_ptr(buffer)
         return @callbacks[id.to_i][:input_callback].call(buffer, input)
       end
 
@@ -277,7 +267,7 @@ module Weechat
       # @see .call_input_callback
       # @private
       def call_close_callback(id, buffer)
-        buffer = Buffer.new(buffer)
+        buffer = Buffer.from_ptr(buffer)
         return @callbacks[id.to_i][:close_callback].call(buffer)
       end
 
@@ -295,45 +285,48 @@ module Weechat
       #
       # @return [Buffer] The current buffer
       def current
-        Buffer.new(Weechat.current_buffer)
+        Buffer.from_ptr(Weechat.current_buffer)
       end
 
-      # Creates a new buffer.
-      #
-      # @param [#to_s] name The name of the new buffer
-      # @param [#call] input_callback The callback to be called when something
-      #   is entered in the new buffer's input line
-      # @param [#call] close_callback The callback to be called when the new buffer
-      #   is being closed
-      # @example
-      #   Buffer.create("my buffer",
-      #     lambda {|b, i|
-      #       # work with input
-      #     },
-      #     lambda {|b|
-      #       # respond to the closing of a buffer
-      #     }
-      #   )
-      # @return [Buffer] The new buffer
-      # @raise [Exception::DuplicateBufferName] In case a buffer with that name already exists
-      def create(name, input_callback, close_callback)
-        @callbacks << {
-          :input_callback => EvaluatedCallback.new(input_callback),
-          :close_callback => EvaluatedCallback.new(close_callback),
-        }
-        id = @callbacks.size - 1
-        ptr = Weechat.buffer_new(name.to_s, "input_callback", id.to_s, "close_callback", id.to_s)
-        if ptr.empty?
-          raise Exception::DuplicateBufferName, name.to_s
-        else
-          @callbacks[-1][:ptr] = ptr
-          Buffer.new(ptr)
-        end
+      def from_ptr(ptr)
+        o = super
+        o.instance_variable_set(:@input, Weechat::Input.new(o))
+        o.instance_variable_set(:@keybinds, {})
+        o
       end
     end
 
-    def initialize(ptr)
-      super
+    # Creates a new buffer.
+    #
+    # @param [#to_s] name The name of the new buffer
+    # @param [#call] input_callback The callback to be called when something
+    #   is entered in the new buffer's input line
+    # @param [#call] close_callback The callback to be called when the new buffer
+    #   is being closed
+    # @example
+    #   Buffer.create("my buffer",
+    #     lambda {|b, i|
+    #       # work with input
+    #     },
+    #     lambda {|b|
+    #       # respond to the closing of a buffer
+    #     }
+    #   )
+    # @return [Buffer] The new buffer
+    # @raise [Exception::DuplicateBufferName] In case a buffer with that name already exists
+    def initialize(name, input_callback, close_callback)
+      self.class.callbacks << {
+        :input_callback => EvaluatedCallback.new(input_callback),
+        :close_callback => EvaluatedCallback.new(close_callback),
+      }
+      id = self.class.callbacks.size - 1
+      @ptr = Weechat.buffer_new(name.to_s, "input_callback", id.to_s, "close_callback", id.to_s)
+      if ptr.empty?
+        raise Exception::DuplicateBufferName, name.to_s
+      else
+        self.class.callbacks[-1][:ptr] = ptr
+      end
+
       @input = Weechat::Input.new(self)
       @keybinds = {}
     end
@@ -569,5 +562,5 @@ module Weechat
   end
 
   # The core buffer
-  Core = Buffer.new("")
+  Core = Buffer.from_ptr("")
 end

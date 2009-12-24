@@ -58,7 +58,7 @@ module Weechat
     # @private
     @transformations = {
       [:first_line_displayed, :scroll] => lambda {|v| Weechat.integer_to_bool(v) },
-      [:buffer] => lambda {|v| Buffer.new(v) },
+      [:buffer] => lambda {|v| Buffer.from_ptr(v) },
     }.freeze
 
     # @private
@@ -78,26 +78,27 @@ module Weechat
 
     class << self
       def current
-        Window.new(Weechat.current_window)
+        Window.from_ptr(Weechat.current_window)
       end
 
       # @todo TODO move into own module
       def windows
         windows = []
         Weechat::Infolist.parse("window").each do |window|
-          windows << Window.new(window[:pointer])
+          windows << Window.from_ptr(window[:pointer])
         end
         windows
       end
       alias_method :all, :windows
+
+      def from_ptr(*args)
+        o = super
+        o.instance_variable_set(:@chat, Chat.new(o))
+      end
     end
 
     init_properties
 
     attr_reader :chat
-    def initialize(*args)
-      super
-      @chat = Chat.new(self)
-    end
   end
 end

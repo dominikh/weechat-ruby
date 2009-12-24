@@ -12,7 +12,7 @@ module Weechat
           if b.empty?
             nil
           else
-            Weechat::Buffer.new(b)
+            Weechat::Buffer.from_ptr(b)
           end
         },
         [:ipv6, :ssl, :ssl_verify, :autoconnect, :autoreconnect,
@@ -45,18 +45,22 @@ module Weechat
       end
 
       attr_reader :ptr
-      def initialize(name)
-        @ptr = @name = name.to_s
-        raise Exception::UnknownServer, name if get_infolist.empty?
+      def initialize(*args)
+        # TODO allow the creation of new channels using commands
       end
 
       class << self
-        alias_method :from_name, :new
+        def from_name(name)
+          o = allocate
+          o.instance_variable_set(:@ptr, name)
+          o.instance_variable_set(:@name, name.to_s)
+          raise Exception::UnknownServer, name if o.get_infolist.empty?
+        end
 
         def servers
           servers = []
           Weechat::Infolist.parse("irc_server").each do |server|
-            servers << Server.new(server[:name])
+            servers << Server.from_name(server[:name])
           end
           servers
         end

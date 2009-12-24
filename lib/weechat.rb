@@ -82,7 +82,7 @@ module Weechat
           process.call(code, process.stdout, process.stderr)
         end
       else
-        Weechat::Process.find_by_id(id).call(code, stdout, stderr)
+        process.call(code, stdout, stderr)
       end
     end
 

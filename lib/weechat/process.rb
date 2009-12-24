@@ -15,6 +15,7 @@ module Weechat
       @callback = EvaluatedCallback.new(callback)
       @ptr      = Weechat.hook_process(command, timeout, "process_callback", id.to_s)
     end
+    alias_method :collect?, :collect
 
     def stdout
       @stdout.join("")

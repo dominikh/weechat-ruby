@@ -76,7 +76,7 @@ module Weechat
              end
 
       process = Weechat::Process.find_by_id(id)
-      if process.collect
+      if process.collect?
         process.buffer(stdout, stderr)
         if code == :error || code != :running
           process.call(code, process.stdout, process.stderr)

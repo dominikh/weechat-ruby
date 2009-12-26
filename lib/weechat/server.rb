@@ -49,6 +49,16 @@ module Weechat
         # TODO allow the creation of new channels using commands
       end
 
+      def ==(other)
+        @ptr == other.ptr
+      end
+      alias_method :eql?, "=="
+      alias_method :equal?, "=="
+
+      def hash
+        @ptr.hash
+      end
+
       class << self
         def from_name(name)
           o = allocate

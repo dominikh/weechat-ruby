@@ -55,6 +55,7 @@ module Weechat
           o.instance_variable_set(:@ptr, name)
           o.instance_variable_set(:@name, name.to_s)
           raise Exception::UnknownServer, name if o.get_infolist.empty?
+          o
         end
 
         def servers

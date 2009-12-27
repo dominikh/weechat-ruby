@@ -143,7 +143,7 @@ module Weechat
       [:notify] => lambda {|v| NOTIFY_LEVELS[v] },
       [:text_search] => lambda {|v| [:none, :backward, :foward][v] },
       [:type] => lambda {|v| [:formatted, :free][v]},
-      [:plugin] => lambda {|v| Weechat::Plugin.new(v)},
+      [:plugin] => lambda {|v| Weechat::Plugin.from_ptr(v)},
     }.freeze
 
     # The transformation procedures that get applied to values before they

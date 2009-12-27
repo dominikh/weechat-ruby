@@ -97,9 +97,8 @@ module Weechat
       end
 
       # TODO method for creating a new server
-
-      def get_infolist
-        Weechat::Infolist.parse("irc_server", "", @name)
+      def get_infolist(*fields)
+        Weechat::Infolist.parse("irc_server", "", @name, {}, *fields)
       end
     end
   end

@@ -168,7 +168,7 @@ module Weechat
       #
       # @return [Hash{Symbol => Object}] All properties in the infolist
       def get_infolist(*fields)
-        Weechat::Infolist.parse(self.class.type, @ptr, {}, fields)
+        Weechat::Infolist.parse(self.class.type, @ptr, "", {}, *fields)
       end
 
       # Returns a property obtained by an infolist.

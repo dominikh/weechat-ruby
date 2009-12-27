@@ -139,4 +139,32 @@ class String
     end
     out
   end
+
+  # Downcase a string (nickname) according to RFC 1459.
+  #
+  # @return [String]
+  def irc_downcase
+    downcase.tr("[]\\", "{}|")
+  end
+
+  # Same as #irc_downcase, but modifying the string in place.
+  #
+  # @return [String] self
+  def irc_downcase!
+    replace(irc_downcase)
+  end
+
+  # Upcases a string (nickname) according to RFC 1459.
+  #
+  # @return [String]
+  def irc_upcase
+    upcase.tr("{}|", "[]\\")
+  end
+
+  # Same as #irc_upcase, but modifying the string in place.
+  #
+  # @return [String] self
+  def irc_upcase!
+    replace(irc_upcase)
+  end
 end

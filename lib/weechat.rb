@@ -87,6 +87,7 @@ module Weechat
     end
 
     ModifierCallbackTransformations = {
+      [/^irc_(in|out)_.+$/] => lambda { |v| Weechat::IRC::Server.from_name(v) },
       ['irc_color_decode', 'irc_color_encode'] => lambda { |v| Weechat.integer_to_bool(v) },
       [/^bar_condition_.+$/]                   => lambda { |v| Weechat::Window.from_ptr(v) },
       ["input_text_content", "input_text_display",
@@ -111,6 +112,7 @@ module Weechat
     def modifier_callback(id, modifier, modifier_data, s)
       klass = Weechat::Modifiers::Mappings[modifier] || Weechat::Modifier
       modifier_data = Weechat::Utilities.apply_transformation(modifier, modifier_data, ModifierCallbackTransformations)
+      modifier_data = [modifier_data] unless modifier_data.is_a?(Array)
       args = modifier_data + [Weechat::Line.parse(s)]
       callback = klass.find_by_id(id)
       callback ||= Weechat::Modifier.find_by_id(id)

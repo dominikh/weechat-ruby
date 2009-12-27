@@ -359,6 +359,23 @@ module Weechat
       IRC::Channel.new(self)
     end
 
+    def server
+      return nil unless ["core", "irc"].include? self.plugin.name
+      parts = self.name.split(".")
+      name1, name2 = parts[0], parts[1..-1].join(",")
+
+      server = begin
+                 IRC::Server.from_name(name1)
+               rescue Exception::UnknownServer
+                 begin
+                   raise Exception::UnknownServer if name2.empty?
+                   IRC::Server.from_name(name2)
+                 rescue Exception::UnknownServer
+                   nil
+                 end
+               end
+    end
+
     # Send a command to the current buffer.
     #
     # Note: If the given command does not start with a slash, one will be added.

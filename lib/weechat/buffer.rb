@@ -180,6 +180,7 @@ module Weechat
       :position            => :number,
       :position=           => :number=,
       :active?             => :current_buffer,
+      :current?            => :current_buffer,
     }.freeze
 
     init_properties

@@ -306,17 +306,18 @@ module Weechat
     # @return [Buffer] The new buffer
     # @raise [Exception::DuplicateBufferName] In case a buffer with that name already exists
     def initialize(name, input_callback, close_callback)
-      id = self.class.callbacks.size
+      id = self.class.compute_free_id
+
       @ptr = Weechat.buffer_new(name.to_s, "input_callback", id.to_s, "close_callback", id.to_s)
       if @ptr.empty?
         raise Exception::DuplicateBufferName, name.to_s
       end
 
-      self.class.callbacks << {
-        :input_callback => EvaluatedCallback.new(input_callback),
-        :close_callback => EvaluatedCallback.new(close_callback),
-        :ptr             => @ptr,
-      }
+      self.class.register_callback(
+                        :input_callback => EvaluatedCallback.new(input_callback),
+                        :close_callback => EvaluatedCallback.new(close_callback),
+                        :ptr            => @ptr
+                                   )
 
       @input = Weechat::Input.new(self)
       @keybinds = {}
@@ -445,14 +446,6 @@ module Weechat
     # @return [void]
     def clear
       Weechat.buffer_clear(@ptr)
-    end
-
-    # Returns the callbacks assigned to the buffer.
-    #
-    # @return (see Weechat::Buffer.callbacks)
-    # @private
-    def callbacks
-      self.class.callbacks.find {|c| c.ptr == @ptr}
     end
 
     # The input callback assigned to the buffer.

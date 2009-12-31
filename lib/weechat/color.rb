@@ -8,6 +8,10 @@ module Weechat
       new(v)
     end
 
+    def self.const_missing(c)
+      self.new(c.to_s.downcase)
+    end
+
     # @param [String] name Name of the color
     attr_reader :name
     attr_reader :color

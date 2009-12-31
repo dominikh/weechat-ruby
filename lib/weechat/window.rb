@@ -94,6 +94,7 @@ module Weechat
       def from_ptr(*args)
         o = super
         o.instance_variable_set(:@chat, Chat.new(o))
+        o
       end
     end
 

@@ -6,6 +6,7 @@ module Weechat
     attr_reader :args_description
     attr_reader :completion
     def initialize(*args, &callback)
+      args = args.map{|e| e.dup}
       raise "No callback specified" if callback.nil?
       super
 
@@ -56,6 +57,7 @@ module Weechat
 
     class << self
       def find_by_command(name)
+        name[0..0] = '' if name[0..0] == '/'
         @hooks.values.find {|h| h.command == name}
       end
       alias_method :find_by_name, :find_by_command

@@ -20,7 +20,7 @@ spec = Gem::Specification.new do |s|
   # s.required_ruby_version = '>= 1.9.1'
 
   # s.add_dependency "keyword_arguments"
-
+  s.add_dependency "json"
   # s.add_development_dependency "baretest"
   # s.add_development_dependency "mocha"
 

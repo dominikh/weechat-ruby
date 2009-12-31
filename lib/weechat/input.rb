@@ -25,6 +25,7 @@ module Weechat
     def size
       @buffer.input_buffer_size
     end
+    alias_method :length, :size
 
     def pos
       @buffer.input_buffer_pos

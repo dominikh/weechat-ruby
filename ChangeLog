@@ -1,30 +1,33 @@
+2009-12-31  Dominik Honnef  <dominikho@gmx.net>
+
+	* Rakefile: added missing gem dependency on json
+
+	* lib/weechat/command.rb (Weechat::Command#initialize): dup
+	arguments passed to Command.new
+
+	* lib/weechat/callbacks.rb (Weechat::Callbacks): made callback
+	handling more centralized; changed all uses
+
+	* lib/weechat.rb: do not serialize arbitrary objects anymore
+	* lib/weechat/rubyext/object.rb: deleted file
+
+	* lib/weechat/rubyext/hash.rb (Hash#to_weechat_config)
+	(Hash::from_weechat_config.): use JSON for storing hashes
+	* lib/weechat.rb: use JSON for storing hashes
+
+	* lib/weechat/color.rb (Weechat::Color#color): made name to color
+	lookup dynamic
+
+	* lib/weechat/rubyext/string.rb (String#irc_downcase)
+	(String#irc_downcase): added RFC 1459 up/downcasing to strings
+
+	* lib/weechat/color.rb (Weechat::Color.const_missing): added
+	dynamic color lookup
+
 2009-12-24  Dominik Honnef  <dominikho@gmx.net>
 
-	* lib/weechat/window.rb (Weechat::Window)
-	(Weechat::Window::Chat#current, Weechat::Window.windows)
-	(Weechat::Window::Chat.from_ptr): substituted #initialize with
-	#from_ptr and #from_name where appropriate
-	* lib/weechat/server.rb (Weechat::IRC::Server)
-	(Weechat::IRC::Server#initialize)
-	(Weechat::IRC::Server.from_name, Weechat::IRC::Server#servers):
-	* lib/weechat/pointer.rb (Weechat::Pointer::ClassMethods#from_ptr)
-	(Weechat::Pointer.included): substituted #initialize with
-	#from_ptr and #from_name where appropriate
-	* lib/weechat/channel.rb (Weechat::IRC::Channel#initialize)
-	(Weechat::IRC::Channel#server): substituted #initialize with
-	#from_ptr and #from_name where appropriate
-	* lib/weechat/buffer.rb (Weechat::Buffer.buffers)
-	(Weechat::Buffer#find_by_name, Weechat::Buffer#search)
-	(Weechat::Buffer#call_input_callback)
-	(Weechat::Buffer#call_close_callback, Weechat::Buffer.current)
-	(Weechat::Buffer.from_ptr, Weechat::Buffer#initialize)
-	(Weechat::Buffer#plugin): substituted #initialize with #from_ptr
-	and #from_name where appropriate
-	* lib/weechat.rb (Weechat::Helper#command_callback)
-	(Weechat::Helper#command_run_callback)
-	(Weechat::Helper#print_callback)
-	(Weechat::Helper#process_callback): substituted #initialize with
-	#from_ptr and #from_name where appropriate
+	* *: substituted #initialize with #from_ptr and #from_name where
+	appropriate
 
 	* lib/weechat.rb (Weechat::Helper#process_callback): small performance tweak
 

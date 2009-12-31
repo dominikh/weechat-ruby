@@ -144,7 +144,7 @@ class String
   #
   # @return [String]
   def irc_downcase
-    downcase.tr("[]\\", "{}|")
+    downcase.tr("[]\\~", "{}|^")
   end
 
   # Same as #irc_downcase, but modifying the string in place.
@@ -158,7 +158,7 @@ class String
   #
   # @return [String]
   def irc_upcase
-    upcase.tr("{}|", "[]\\")
+    upcase.tr("{}|^", "[]\\~")
   end
 
   # Same as #irc_upcase, but modifying the string in place.

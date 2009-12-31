@@ -13,13 +13,13 @@ module Weechat
     attr_reader :color
     def initialize(name)
       @name = name
-      @color = Weechat.color(name)
     end
 
-    def to_s
-      @color
+    def color
+      Weechat.color(name)
     end
-    alias_method :to_str, :to_s
+    alias_method :to_s, :color
+    alias_method :to_str, :color
 
     def to_weechat_config
       @name

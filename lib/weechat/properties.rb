@@ -77,6 +77,10 @@ module Weechat
       def apply_transformation(property, value)
         Utilities.apply_transformation(property, value, @transformations)
       end
+
+      def apply_rtransformation(property, value)
+        Utilities.apply_transformation(property, value, @rtransformations)
+      end
     end
 
     module InstanceMethods

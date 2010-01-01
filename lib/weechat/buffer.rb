@@ -99,16 +99,6 @@ module Weechat
     extend Weechat::Properties
     extend Weechat::Callbacks
 
-    # @overload input
-    #   @return [Weechat::Input]
-    # @overload input=(val)
-    #   Sets the content of the input line.
-    #
-    #   @return [void]
-    #   @see Input#text=
-    attr_accessor :input
-
-
     # A list of all properties that can be retrieved using {#get_string_property}.
     #
     # @private
@@ -286,6 +276,16 @@ module Weechat
         o
       end
     end
+
+
+    # @overload input
+    #   @return [Weechat::Input]
+    # @overload input=(val)
+    #   Sets the content of the input line.
+    #
+    #   @return [void]
+    #   @see Input#text=
+    attr_accessor :input
 
     # Creates a new buffer.
     #

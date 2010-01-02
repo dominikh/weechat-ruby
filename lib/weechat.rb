@@ -6,7 +6,7 @@ end
 require 'pp'
 
 module Weechat
-  VERSION = "0.0.4"
+  VERSION = "0.0.5"
   module Helper
     def command_callback(id, buffer, args)
       Weechat::Command.find_by_id(id).call(Weechat::Buffer.from_ptr(buffer), args)
@@ -26,6 +26,10 @@ module Weechat
 
     def close_callback(method, buffer)
       Weechat::Buffer.call_close_callback(method, buffer)
+    end
+
+    def bar_build_callback(id, item, window)
+      Weechat::Bar::Item.call_build_callback(id, window)
     end
 
     def info_callback(id, info, arguments)
@@ -174,6 +178,11 @@ module Weechat
       bool ? 1 : 0
     end
 
+    alias_method :old_bar_update, :bar_update
+    def bar_update(name)
+      old_bar_update(name.to_s)
+    end
+
     alias_method :old_mkdir_home, :mkdir_home
     alias_method :old_mkdir, :mkdir
     alias_method :old_mkdir_parents, :mkdir_parents
@@ -247,6 +256,7 @@ require 'weechat/modifier.rb'
 require 'weechat/input.rb'
 require 'weechat/buffer.rb'
 require 'weechat/window.rb'
+require 'weechat/bar.rb'
 require 'weechat/server.rb'
 require 'weechat/channel.rb'
 require 'weechat/user.rb'

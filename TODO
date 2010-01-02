@@ -130,15 +130,15 @@ nicklist:
 [ ] nicklist_remove_all
 
 bars:
-[ ] bar_item_search
-[ ] bar_item_new
-[ ] bar_item_update
-[ ] bar_item_remove
-[ ] bar_search
-[ ] bar_new
-[ ] bar_set
-[ ] bar_update
-[ ] bar_remove
+[x] bar_item_search
+[x] bar_item_new
+[x] bar_item_update
+[x] bar_item_remove
+[x] bar_search
+[x] bar_new
+[x] bar_set
+[x] bar_update
+[x] bar_remove
 
 commands:
 [x] command
@@ -186,3 +186,6 @@ upgrade:
 
 Functionality:
 [x] if a buffer is a channel, get nicks, usercount, topic, etc
+
+Known limitations:
+- on /upgrade, the library forgets all callbacks

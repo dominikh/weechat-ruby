@@ -1,4 +1,26 @@
+2010-01-03  Dominik Honnef  <dominikho@gmx.net>
+
+	* lib/weechat/bar.rb: added support for bars and bar items
+	* lib/weechat.rb: added support for bars and bar items
+
+	* lib/weechat.rb: bumped version to 0.0.5
+
+2010-01-02  Dominik Honnef  <dominikho@gmx.net>
+
+	* lib/weechat/server.rb (Weechat::IRC::Server.find): unitized find/from_name
+	(Weechat::IRC::Server#get_infolist): removed
+
+	* lib/weechat/plugin.rb (Weechat::Plugin.find): unitized find/from_name
+
+	* lib/weechat/properties.rb (Weechat::Properties::ClassMethods#all):
+	centralised the procedure of getting all instances of a buffer/plugin/etc
+
 2009-12-31  Dominik Honnef  <dominikho@gmx.net>
+
+	* lib/weechat/properties.rb (Weechat::Properties::ClassMethods#apply_rtransformation):
+	added method for applying reverse transformations
+
+	* lib/weechat/input.rb (Weechat::Input#length): added alias #length to #size
 
 	* Rakefile: added missing gem dependency on json
 

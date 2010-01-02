@@ -60,13 +60,6 @@ module Weechat
       end
 
       class << self
-        def from_name(name)
-          o = allocate
-          o.instance_variable_set(:@ptr, name)
-          o.instance_variable_set(:@name, name.to_s)
-          raise Exception::UnknownServer, name if o.get_infolist.empty?
-          o
-        end
         def all
           servers = []
           Weechat::Infolist.parse("irc_server").each do |server|
@@ -74,6 +67,15 @@ module Weechat
           end
           servers
         end
+
+        def find(name)
+          o = allocate
+          o.instance_variable_set(:@ptr, name)
+          o.instance_variable_set(:@name, name.to_s)
+          raise Exception::UnknownServer, name if o.get_infolist.empty?
+          o
+        end
+        alias_method :from_name, :find
       end
 
       def channels

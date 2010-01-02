@@ -26,13 +26,13 @@ module Weechat
     init_properties
 
     class << self
-      def find_by_name(name)
+      def find(name)
         if name.nil? or name.empty? or name == "core"
           return Plugin.from_ptr("")
         end
         all.find {|plugin| plugin.name == name}
       end
-      alias_method :find, :find_by_name
+      alias_method :from_name, :find
 
       def all
         items = super

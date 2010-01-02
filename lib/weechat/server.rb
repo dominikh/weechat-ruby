@@ -39,6 +39,7 @@ module Weechat
       }.freeze
 
       init_properties
+      @type = "irc_server"
 
       def autojoin?
         !disable_autojoin
@@ -97,9 +98,6 @@ module Weechat
       end
 
       # TODO method for creating a new server
-      def get_infolist(*fields)
-        Weechat::Infolist.parse("irc_server", "", @name, {}, *fields)
-      end
     end
   end
 end

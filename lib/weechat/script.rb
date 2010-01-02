@@ -67,10 +67,9 @@ module Weechat
     init_properties
 
     class << self
-      def scripts(plugin = nil)
+      def all(plugin = nil)
         Plugin.all.map {|plugin| plugin.scripts}.flatten
       end
-      alias_method :all, :scripts
     end
 
     def initialize(ptr, plugin)

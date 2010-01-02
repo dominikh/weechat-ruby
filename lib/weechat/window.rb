@@ -81,16 +81,6 @@ module Weechat
         Window.from_ptr(Weechat.current_window)
       end
 
-      # @todo TODO move into own module
-      def windows
-        windows = []
-        Weechat::Infolist.parse("window").each do |window|
-          windows << Window.from_ptr(window[:pointer])
-        end
-        windows
-      end
-      alias_method :all, :windows
-
       def from_ptr(*args)
         o = super
         o.instance_variable_set(:@chat, Chat.new(o))

@@ -12,8 +12,7 @@ module Weechat
         @hook_classes << by
       end
 
-      def hooks; @hooks; end
-      alias_method :all, :hooks
+      def all; @hooks; end
 
       def init
         @hooks = {}

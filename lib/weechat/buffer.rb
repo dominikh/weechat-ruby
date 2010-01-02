@@ -178,23 +178,10 @@ module Weechat
     class << self
       def find(plugin, name)
         plugin = Weechat::Plugin.from_name(plugin) if plugin.is_a?(String)
-        buffers.find {|buffer|
+        all.find {|buffer|
           buffer.name == name && buffer.plugin == plugin
         }
       end
-
-      # Returns a list of all buffers
-      #
-      # @return [Array<Buffer>]
-      # @todo move into own module
-      def buffers
-        buffers = []
-        Weechat::Infolist.parse("buffer").each do |buffer|
-          buffers << Buffer.from_ptr(buffer[:pointer])
-        end
-        buffers
-      end
-      alias_method :all, :buffers
 
       # Finds a buffer by its name and its plugin.
       #
@@ -342,7 +329,7 @@ module Weechat
     #
     # @return [Boolean]
     def valid?
-      Buffer.buffers.map{|b|b.pointer}.include?(@ptr)
+      Buffer.all.map{|b|b.pointer}.include?(@ptr)
     end
     alias_method :exist?, :valid?
 

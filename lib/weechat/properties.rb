@@ -36,6 +36,14 @@ module Weechat
         @type
       end
 
+      def all
+        items = []
+        Weechat::Infolist.parse(@type).each do |item|
+          items << from_ptr(item[:pointer])
+        end
+        items
+      end
+
       def init_properties
         @known_string_properties  ||= [].freeze
         @known_integer_properties ||= [].freeze

@@ -67,15 +67,13 @@ module Weechat
           raise Exception::UnknownServer, name if o.get_infolist.empty?
           o
         end
-
-        def servers
+        def all
           servers = []
           Weechat::Infolist.parse("irc_server").each do |server|
             servers << Server.from_name(server[:name])
           end
           servers
         end
-        alias_method :all, :servers
       end
 
       def channels

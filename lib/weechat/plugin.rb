@@ -30,18 +30,15 @@ module Weechat
         if name.nil? or name.empty? or name == "core"
           return Plugin.from_ptr("")
         end
-        plugins.find {|plugin| plugin.name == name}
+        all.find {|plugin| plugin.name == name}
       end
       alias_method :find, :find_by_name
 
-      def plugins
-        plugins = [Plugin.from_ptr("")]
-        Weechat::Infolist.parse("plugin").each do |plugin|
-          plugins << Plugin.from_ptr(plugin[:pointer])
-        end
-        plugins
+      def all
+        items = super
+        items[0,0] = Plugin.find("")
+        items
       end
-      alias_method :all, :plugins
 
       # Loads a plugin.
       #

@@ -6,7 +6,13 @@ end
 require 'pp'
 
 module Weechat
-  VERSION = "0.0.5"
+  VERSION = "0.0.6"
+
+  def self.included(other)
+    other.__send__(:include, Script::Skeleton)
+    other.__send__(:include, Weechat::Helper)
+  end
+
   module Helper
     def command_callback(id, buffer, args)
       Weechat::Command.find_by_id(id).call(Weechat::Buffer.from_ptr(buffer), args)

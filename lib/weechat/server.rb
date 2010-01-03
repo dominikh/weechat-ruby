@@ -71,7 +71,7 @@ module Weechat
 
         def find(name)
           o = allocate
-          o.instance_variable_set(:@ptr, name)
+          o.instance_variable_set(:@ptr, name.to_s)
           o.instance_variable_set(:@name, name.to_s)
           raise Exception::UnknownServer, name if o.get_infolist.empty?
           o

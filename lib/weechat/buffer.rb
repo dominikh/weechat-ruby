@@ -176,19 +176,12 @@ module Weechat
     init_properties
 
     class << self
-      def find(plugin, name)
-        plugin = Weechat::Plugin.from_name(plugin) if plugin.is_a?(String)
-        all.find {|buffer|
-          buffer.name == name && buffer.plugin == plugin
-        }
-      end
-
       # Finds a buffer by its name and its plugin.
       #
       # @param [String] name The name of the buffer to find
       # @param [String, Plugin] plugin The plugin of the buffer to find
       # @return [Buffer, nil] An existing buffer or nil if non was found.
-      def find_by_name(name, plugin = "ruby")
+      def find(name, plugin = "ruby")
         plugin = case plugin
                  when Plugin
                    plugin.name
@@ -202,7 +195,6 @@ module Weechat
           Buffer.from_ptr(ptr)
         end
       end
-      alias_method :find, :find_by_name
 
       # Returns all buffers with a certain name
       #

@@ -20,7 +20,10 @@ module Weechat
         def find(server, channel)
           server  = server.name if server.respond_to?(:name)
           channel = channel.name if channel.respond_to?(:name)
-          Weechat::Buffer.find("irc", "#{server}.#{channel}")
+          b = Weechat::Buffer.find("#{server}.#{channel}", "irc")
+          if b
+            b.channel
+          end
         end
       end
 

@@ -47,7 +47,12 @@ module Weechat
         alias_method :from_name, :find
       end # eigenclass
 
+      def build(window)
+        ""
+      end
+
       def initialize(name, &build_callback)
+        build_callback ||= method(:build)
         id = self.class.compute_free_id
         @ptr = Weechat.bar_item_new(name, "bar_build_callback", id.to_s)
         if @ptr.empty?

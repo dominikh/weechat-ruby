@@ -66,7 +66,7 @@ module Weechat
       end
 
       def update
-        Weechat.bar_item_update(@name)
+        Weechat.bar_item_update(name)
       end
 
       def delete

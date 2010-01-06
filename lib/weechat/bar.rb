@@ -5,16 +5,26 @@ module Weechat
       extend Weechat::Properties
       extend Weechat::Callbacks
 
-      @transformations = {
-        [:plugin] => lambda { |v| Weechat::Plugin.from_ptr(v) },
-      }
+      class << self
+        def inherited(by)
+          by.set_instance_variables
+        end
 
-      @mappings = {}
-      @rtransformations = {}
-      @settable_properties = %w()
+        def set_instance_variables
+          @transformations = {
+            [:plugin] => lambda { |v| Weechat::Plugin.from_ptr(v) },
+          }
 
-      init_properties
-      @type = "bar_item"
+          @mappings = {}
+          @rtransformations = {}
+          @settable_properties = %w()
+
+          init_properties
+          @type = "bar_item"
+        end
+      end
+
+      set_instance_variables
 
       class << self
         def items

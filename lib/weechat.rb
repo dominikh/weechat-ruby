@@ -190,6 +190,11 @@ module Weechat
       old_bar_update(name.to_s)
     end
 
+    alias_method :old_bar_item_update, :bar_item_update
+    def bar_item_update(name)
+      old_bar_item_update(name.to_s)
+    end
+
     alias_method :old_mkdir_home, :mkdir_home
     alias_method :old_mkdir, :mkdir
     alias_method :old_mkdir_parents, :mkdir_parents

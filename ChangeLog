@@ -1,4 +1,29 @@
+2010-01-06  Dominik Honnef  <dominikho@gmx.net>
+
+	* lib/weechat/irc/identifier.rb (Weechat::IRC::Identifier):
+	replaces Host and represents a weechat host
+	* lib/weechat/irc/host.rb (Weechat::IRC::Host): Host now really is
+	an IRC host
+	* lib/weechat/irc/ctcp.rb (Weechat::IRC::CTCP): added parser for
+	CTCPs
+	* lib/weechat/irc/message.rb (Weechat::IRC::Message): added parser
+	for IRC messages
+
+	* lib/weechat/irc/*: moved irc specific classes into own subdirectory
+
 2010-01-03  Dominik Honnef  <dominikho@gmx.net>
+
+	* lib/weechat.rb (Weechat.included): automatically include script
+	skeleton and helpers
+
+	* lib/weechat/server.rb (Weechat::IRC::Server.find): convert name
+	property to string
+
+	* lib/weechat/channel.rb (Weechat::IRC::Channel#find): returns a
+	channel instead of a buffer
+
+	* lib/weechat/buffer.rb (Weechat::Buffer#find): removed duplicated
+	Buffer#find method
 
 	* lib/weechat/bar.rb: added support for bars and bar items
 	* lib/weechat.rb: added support for bars and bar items

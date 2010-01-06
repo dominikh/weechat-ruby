@@ -64,6 +64,7 @@ module Weechat
       [/irc_server_(connecting|connected|disconnected)/] => lambda { |v| Weechat::Server.from_name(v) },
       [/weechat_(highlight|pv)/] => lambda { |v| Weechat::Line.parse(v) },
       [/window_(scrolled|unzooming|unzoomed|zooming|zoomed)/] => lambda { |v| Weechat::Window.from_ptr(v) },
+      ["irc_ctcp"] => lambda { |v| Weechat::IRC::Message.new(v) },
     }
 
     def signal_callback(id, signal, data)
@@ -263,10 +264,13 @@ require 'weechat/input.rb'
 require 'weechat/buffer.rb'
 require 'weechat/window.rb'
 require 'weechat/bar.rb'
-require 'weechat/server.rb'
-require 'weechat/channel.rb'
-require 'weechat/user.rb'
-require 'weechat/host.rb'
+require 'weechat/irc/server.rb'
+require 'weechat/irc/channel.rb'
+require 'weechat/irc/message.rb'
+require 'weechat/irc/ctcp.rb'
+require 'weechat/irc/host.rb'
+require 'weechat/irc/identifier.rb'
+require 'weechat/irc/user.rb'
 require 'weechat/infolist.rb'
 require 'weechat/color.rb'
 require 'weechat/plugin.rb'

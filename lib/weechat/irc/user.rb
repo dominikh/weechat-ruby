@@ -8,7 +8,7 @@ module Weechat
       attr_reader :channel
       def initialize(args = {})
         @name = args[:name]
-        @host = IRC::Host.new(args[:host])
+        @identifier = IRC::Identifier.new(args[:host])
         @flags, @color, @channel = args.values_at(:flags, :color, :channel)
       end
 

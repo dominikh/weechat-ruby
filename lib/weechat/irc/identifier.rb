@@ -1,6 +1,6 @@
 module Weechat
   module IRC
-    class Host
+    class Identifier
       attr_reader :user
       attr_reader :host
       def initialize(string)

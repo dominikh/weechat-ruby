@@ -1,20 +1,18 @@
 module Weechat
   module IRC
-    class CTCP < Message
-      attr_reader :receiver
-      attr_reader :ctcp_command
-      attr_reader :ctcp_param
+    class CTCP < Weechat::Modifier
+      def initialize(command, &callback)
+        super("irc_in_privmsg") do |server, line|
+          ret = line
+          m = Weechat::IRC::Message.new(line.message)
 
-      def initialize(*args)
-        super
-        @receiver = @params.first
-        parts = @params.last[1..-2].split(" ")
-        @ctcp_command = parts.first
-        @ctcp_param = parts[1..-1].join(" ")
-      end
+          if m.ctcp? && (ctcp = m.to_ctcp).ctcp_command == command
+             callback.call(server, ctcp)
+             ret = nil
+          end
 
-      def ctcp?
-        true
+          ret
+        end
       end
     end
   end

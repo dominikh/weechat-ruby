@@ -51,7 +51,7 @@ module Weechat
       end
 
       def ==(other)
-        @ptr == other.ptr
+        other.respond_to?(:ptr) && @ptr == other.ptr
       end
       alias_method :eql?, "=="
       alias_method :equal?, "=="

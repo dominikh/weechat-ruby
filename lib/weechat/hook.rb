@@ -7,6 +7,8 @@ module Weechat
 
     @hook_classes = [self]
     class << self
+      attr_reader :hook_classes
+
       def inherited(by)
         by.init
         @hook_classes << by

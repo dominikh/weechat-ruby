@@ -101,6 +101,13 @@ module Weechat
         self.buffer.exec("/disconnect #{@name}")
       end
 
+      def command(*parts)
+        self.buffer.command(*parts)
+      end
+      alias_method :send_command, :command
+      alias_method :exec, :command
+      alias_method :execute, :command
+
       # TODO method for creating a new server
     end
   end

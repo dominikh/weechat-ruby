@@ -79,6 +79,10 @@ module Weechat
         alias_method :from_name, :find
       end
 
+      def get_infolist(*fields)
+        Weechat::Infolist.parse(self.class.type, "", @ptr, {}, *fields)
+      end
+
       def channels
         channels = []
         Weechat::Infolist.parse("irc_channel", "", @name).each do |channel|

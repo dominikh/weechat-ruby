@@ -33,5 +33,7 @@ module Weechat
     class NotAChannel < RuntimeError; end
 
     class UnknownServer < RuntimeError; end
+
+    class NotJoined < RuntimeError; end
   end
 end

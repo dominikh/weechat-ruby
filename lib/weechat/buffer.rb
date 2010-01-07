@@ -332,12 +332,21 @@ module Weechat
       self.localvar_type == "channel"
     end
 
+    def query?
+      self.localvar_type == "private"
+    end
+    alias_method :private?, :query?
+
     # Returns the channel associated with the buffer.
     #
     # @raise [Exception::NotAChannel]
     # @return [IRC::Channel]
     def channel
       IRC::Channel.new(self)
+    end
+
+    def query
+      IRC::Query.new(self)
     end
 
     def server

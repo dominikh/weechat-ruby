@@ -80,5 +80,32 @@ module Weechat
       alias_method :privmsg, :send
       alias_method :say, :send
     end
+    class Query < Channel
+      init_properties
+      @type = "channel"
+
+      [:join, :rejoin, :part, :nicks].each do |m|
+        undef_method m
+      end
+
+      class << self
+        def all
+          Weechat::Buffer.all.select {|b| b.query?}.map{|b| b.query}
+        end
+
+        def find(server, nick)
+          server  = server.name if server.respond_to?(:name)
+          nick    = nick.name if nick.respond_to?(:name)
+          b = Weechat::Buffer.find("#{server}.#{nick}", "irc")
+          if b
+            b.query
+          end
+        end
+      end # eigenclass
+
+      def recipient
+        self.name
+      end
+    end # Query
   end
 end

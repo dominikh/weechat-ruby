@@ -98,7 +98,7 @@ module Weechat
 
       def disconnect
         return false if not connected?
-        self.buffer.exec("/disconnect #{@name}")
+        exec("/disconnect #{@name}")
       end
 
       def command(*parts)

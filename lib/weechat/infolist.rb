@@ -1,7 +1,7 @@
 module Weechat
   class Infolist
     def self.parse(type, ptr="", arguments="", requirements = {}, *fields)
-      infolist_ptr = Weechat.infolist_get(type, ptr, arguments)
+      infolist_ptr = Weechat.infolist_get(type.to_s, ptr.to_s, arguments.to_s)
       ret = []
       while Weechat.infolist_next(infolist_ptr) > 0
         h = {}

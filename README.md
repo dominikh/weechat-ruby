@@ -162,7 +162,6 @@ unloaded.
 
     require 'weechat'
     include Weechat
-    include Script::Skeleton
 
     @script = {
       :name => "testscript",                           # must not be empty
@@ -247,6 +246,32 @@ Updating the gem
 
 The easiest way of updating the gem is to run `gem update weechat` and
 then, in WeeChat, `/upgrade`.
+
+Asynchronous calls
+==================
+
+Due to the nature of IRC, some information cannot be requested
+synchronously, e.g. those that /whois returns. In order to use them,
+one has to use callbacks (not to be confused with WeeChat callbacks),
+which will get called as soon as the requested information are
+available.
+
+    user.real_name do |rn|
+      # this will get called as soon as the real_name is available.
+      # rn will contain the requested information
+    end
+
+Information like a user's real name are internally requested and
+handled using the {Weechat::IRC::Whois} class, which can be accessed
+using {Weechat::IRC::User#whois}, in the same fashion a single property can be requested:
+
+    user.whois do |whois|
+      # one can either rely on Whois#method_missing ...
+      whois.real_name
+
+      # or access the data hash directly
+      whois.data # => {:real_name => "...", ...}
+    end
 
 
 Contributing to the project

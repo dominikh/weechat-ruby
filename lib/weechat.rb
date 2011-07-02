@@ -102,7 +102,7 @@ module Weechat
       ['irc_color_decode', 'irc_color_encode'] => lambda { |v| Weechat.integer_to_bool(v) },
       [/^bar_condition_.+$/]                   => lambda { |v| Weechat::Window.from_ptr(v) },
       ["input_text_content", "input_text_display",
-       "input_text_display_with_cursor"]       => lambda { |v| Weechat::Buffer.from_ptr(v) },
+       "input_text_display_with_cursor", "history_add"]       => lambda { |v| Weechat::Buffer.from_ptr(v) },
       ["weechat_print"]                        => lambda { |v|
         parts = v.split(";")
         parts[0] = Weechat::Plugin.find(parts[0])

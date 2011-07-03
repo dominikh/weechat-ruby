@@ -6,6 +6,7 @@ module Weechat
       extend Weechat::Callbacks
 
       class << self
+        protected
         def inherited(by)
           by.set_instance_variables
         end
@@ -22,6 +23,7 @@ module Weechat
           init_properties
           @type = "bar_item"
         end
+        public
       end
 
       set_instance_variables
@@ -36,6 +38,10 @@ module Weechat
         end
         alias_method :all, :items
 
+        # finds the Bar::Item with the given name
+        # @param [String] name The name of the bar item to find
+        # @return [Bar::Item, nil] The found bar item, or nil if none with the given
+        #  name was found
         def find(name)
           ptr = Weechat.bar_item_search(name)
           if !ptr.empty?
@@ -51,6 +57,14 @@ module Weechat
         ""
       end
 
+      # Creates a new Bar Item, and registers it for use for Bars.
+      # @param [String] name The name of the bar item. It should be unique. This
+      # is used in the +:items+ option for Bars to display the bar item
+      # @yield [window] The callback to generate and update the item
+      # @yieldparam [Window, nil] window If the bar this item is placed on is inside a window
+      #   (ie the bar's type is +:window+), it will be the window the bar is present on. Otherwise
+      #   it will be nil.
+      # @yieldreturn [String] The string used to render the item
       def initialize(name, &build_callback)
         build_callback ||= method(:build)
         id = self.class.compute_free_id
@@ -65,10 +79,13 @@ module Weechat
                                      )
       end
 
+      # Updates the bar item
       def update
         Weechat.bar_item_update(name)
       end
 
+      # removes the bar item, it will no longer be able to be used
+      # on any Bars
       def delete
         # TODO mark deletion status
         Weechat.bar_item_remove(@ptr)
@@ -140,6 +157,9 @@ module Weechat
     init_properties
 
     class << self
+      # Finds the Bar with the given name
+      # @param [String] name The name of the bar to find
+      # @return [Bar?] The found Bar, or nil if none was found
       def find(name)
         ptr = Weechat.bar_search(name)
         if !ptr.empty?
@@ -232,10 +252,12 @@ module Weechat
     end
 
     public
+    # updates the bar
     def update
       Weechat.bar_update(self.name)
     end
 
+    # deletes the bar.
     def delete
       # TODO mark deletion state
       Weechat.bar_remove(@ptr)

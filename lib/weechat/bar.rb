@@ -151,10 +151,45 @@ module Weechat
       alias_method :from_name, :find
     end # eigenclass
 
-    def initialize(args = {})
-      @name = args[:name]
+    # Creates a new Bar. Takes many optional arguments, but only +:name+, +:position+ and
+    # +:items+ are required
+    # @example
+    #  Bar.new(:name => "BottomTimeBar", :position => :bottom, :items => ["time"])
+    #
+    # @param [Hash] opts The options for creating the Bar object
+    # @option opts [String] :name gives the name of the url bar. It has to be unique for all url bars
+    # @option opts [:top, :bottom, :left, :right] :position The position of the bar
+    # @option opts [Array<String>] :items Items that make up the url bar
+    #
+    # @option opts [:root, :window] :type either +:root+ or +:window+ (default +:root+)
+    #   * +:root+ bar displayed once, outside windows
+    #   * +:window+ bar displayed in each window
+    # @option opts [Boolean] :hidden whether the bar is hidden (default false)
+    # @option opts [Integer] :priority not sure... (default 0) TODO find out what this does
+    # @option opts [:active, :inactive, :nicklist] :condition  if +:type == :window+, what windows to use them in (default +:active+)
+    #   * +:active+ if bar is displayed in active window only
+    #   * +:inactive+ if bar is displayed in inactive windows only
+    #   * +:nicklist+ if bar is displayed in windows with nicklist
+    # @option opts [:horizontal, :vertical, :columns_horizontal, :columns_vertical] :filling_top_bottom how items are filled (default :horizontal)
+    #   * +:horizontal+ items are filled horizontally (space after each item)
+    #   * +:vertical+ items are filled vertically (new line after each item)
+    #   * +:columns_horizontal+ items are filled horizontally, displayed with columns
+    #   * +:columns_vertical+ items are filled vertically, displayed with columns
+    # @option opts [:horizontal, :vertical, :columns_horizontal, :columns_vertical] :filling_left_right how items are filled (default :horizontal )
+    #   * +:horizontal+ items are filled horizontally (space after each item)
+    #   * +:vertical+ items are filled vertically (new line after each item)
+    #   * +:columns_horizontal+ items are filled horizontally, displayed with columns
+    #   * +:columns_vertical+ items are filled vertically, displayed with columns
+    # @option opts [Integer] :size bar size in chars, 0 means automatic size (default 0)
+    # @option opts [Integer] :size_max max size for bar, 0 means no max size (default 0)
+    # @option opts [String] :color_fg color for text in bar (default "black")
+    # @option opts [String] :color_delim color for delimiters in bar (default "blue")
+    # @option opts [String] :color_bg background color for bar (default "white")
+    # @option opts [Boolean] :separator whether bar has separator line with other windows/bars (default false)
+    def initialize(opts)
+      @name = opts[:name]
       mapped_args = {}
-      args_with_defaults = add_defaults_to_args(args)
+      args_with_defaults = add_defaults_to_args(opts)
       args_with_defaults.each do |key, value|
         mapped_args[key] = self.class.apply_rtransformation(key, value)
       end

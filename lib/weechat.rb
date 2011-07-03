@@ -64,6 +64,7 @@ module Weechat
       [/irc_server_(connecting|connected|disconnected)/] => lambda { |v| Weechat::Server.from_name(v) },
       [/weechat_(highlight|pv)/] => lambda { |v| Weechat::Line.parse(v) },
       [/window_(scrolled|unzooming|unzoomed|zooming|zoomed)/] => lambda { |v| Weechat::Window.from_ptr(v) },
+      [/irc_(raw_)?((in)|(out))/] => lambda { |v| Weechat::IRC::Message.parse_message(v) },
       ["irc_ctcp"] => lambda { |v| Weechat::IRC::Message.new(v) },
     }
 

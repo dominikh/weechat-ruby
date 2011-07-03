@@ -152,8 +152,10 @@ module Weechat
     end # eigenclass
 
     def initialize(args = {})
+      @name = args[:name]
       mapped_args = {}
-      args.each do |key, value|
+      args_with_defaults = add_defaults_to_args(args)
+      args_with_defaults.each do |key, value|
         mapped_args[key] = self.class.apply_rtransformation(key, value)
       end
 
@@ -166,9 +168,35 @@ module Weechat
         raise "Could not create bar"
       end
 
-      @name = args[:name]
     end
 
+    private
+    def add_defaults_to_args(args)
+      default_args = {
+          :type => :root,
+          :hidden => false,
+          :priority => 0,
+          :condition => :active,
+          :filling_top_bottom => :horizontal,
+          :filling_left_right => :horizontal,
+          :size => 0,
+          :size_max => 0,
+          :color_fg => "black",
+          :color_delim => "black",
+          :color_bg => "white",
+          :separator => false
+        }
+      result = {}
+      default_args.each do |key, value|
+        result[key] = default_args[key]
+      end
+      args.each do |key, value|
+        result[key] = value
+      end
+      result
+    end
+
+    public
     def update
       Weechat.bar_update(self.name)
     end

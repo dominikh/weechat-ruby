@@ -13,6 +13,32 @@ module Weechat
     other.__send__(:include, Weechat::Helper)
   end
 
+  # Details about a single line that has been printed in a buffer.
+  # Used by the Hooks::Print hook
+  class PrintedLine
+    def initialize(buffer, date, tags, displayed, highlight, prefix, message)
+      @buffer, @date, @tags, @displayed, @highlight = buffer, date, tags, displayed, highlight
+      @prefix, @message = prefix, message
+    end
+
+    # @return [Buffer] The buffer the line was printed on
+    attr_reader :buffer
+    # @return [Time] The date the line was printed
+    attr_reader :date
+    # @return [Array<String>] The tags the line has TODO what is this?
+    attr_reader :tags
+    # @return [Boolean] True if line was displayed, false if it was filtered
+    attr_reader :displayed
+    # @return [Boolean] Whether the line was highlighted
+    attr_reader :highlight
+
+    # @return [String] The prefix of the message TODO give example
+    attr_reader :prefix
+
+    # @return [String] The message text
+    attr_reader :message
+  end
+
   module Helper
     def command_callback(id, buffer, args)
       Weechat::Command.find_by_id(id).call(Weechat::Buffer.from_ptr(buffer), args)
@@ -48,7 +74,8 @@ module Weechat
       tags      = tags.split(",")
       displayed = Weechat.integer_to_bool(displayed)
       highlight = Weechat.integer_to_bool(highlight)
-      Weechat::Hooks::Print.find_by_id(id).call(buffer, date, tags, displayed, highlight, prefix, message)
+      line = PrintedLine.new(buffer, date, tags, displayed, highlight, prefix, message)
+      Weechat::Hooks::Print.find_by_id(id).call(line)
     end
 
     # TODO add IRC parser

@@ -1,4 +1,7 @@
 module Weechat
+  # mixin for objects with a underlying implementation as a weechat c pointer. Gives
+  # the class access to the from_ptr class method, which will create new instance of the
+  # class using a pointer. Also defines the equality methods to compare pointer values
   module Pointer
     module ClassMethods
       def from_ptr(ptr)

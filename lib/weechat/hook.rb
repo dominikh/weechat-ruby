@@ -1,5 +1,8 @@
 module Weechat
+  # Class that adds a hook to a weechat event. Has a callback that is called when the
+  # event occurs. Overridden by subclasses for specific hooks
   # Each hook as an unique ID, which is passed to the middle-man
+  #
   # callback, which then calls the appropriate callback.
   class Hook
     include Weechat::Pointer
@@ -14,6 +17,7 @@ module Weechat
         @hook_classes << by
       end
 
+      # returns all active hooks
       def all; @hooks; end
 
       def init
@@ -79,6 +83,7 @@ module Weechat
       return @callback.call(*args)
     end
 
+    # finds the hook with the given id
     def self.find_by_id(id)
       @hooks[id.to_i]
     end
@@ -88,10 +93,13 @@ module Weechat
       @@unique_id += 1
     end
 
+    # registers the hook so it will be called when the event the hook
+    # is hooked to occurs
     def self.register(hook)
       @hooks[hook.id] = hook
     end
 
+    # unregisters the hook
     def self.unregister(hook)
       @hooks.delete hook.id
     end

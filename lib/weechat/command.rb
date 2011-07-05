@@ -5,6 +5,25 @@ module Weechat
     attr_reader :args
     attr_reader :args_description
     attr_reader :completion
+    # Creates a new command, which can then be invoked with /command-name args
+    # also will register help for the command
+    # @overload new(name, description)
+    #   Creates a command with a name and description
+    #   @param [String] name The name of the command
+    #   @param [String] description The description of the command, will appear in help
+    #   @yield (buffer, input) The action that is performed when the command is run
+    #   @yieldparam [Buffer] buffer The buffer the command was run in
+    #   @yieldparam [String] input The string passed to the command (or "" if no string was passed)
+    # @overload new(opts)
+    #   Create a command using various options
+    #   @param [Hash] initialize(opts)
+    #   @option opts [String] :name The name of the command
+    #   @option opts [String] :description The description of the command
+    #   @option opts [Array, #to_s] :completion TODO document
+    #   @option opts [Hash, Array, #to_s] :args_description TODO document
+    #   @yield (buffer, input) The action that is performed when the command is run
+    #   @yieldparam [Buffer] buffer The buffer the command was run in
+    #   @yieldparam [String] input The string passed to the command (or "" if no string was passed)
     def initialize(*args, &callback)
       args = args.map{|e| e.dup}
       raise "No callback specified" if callback.nil?

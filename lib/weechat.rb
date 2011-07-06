@@ -8,48 +8,89 @@ require 'pp'
 module Weechat
   VERSION = "0.0.6"
 
+  protected
   def self.included(other)
     other.__send__(:include, Script::Skeleton)
     other.__send__(:include, Weechat::Helper)
   end
+  public
 
+  # Details about a single line that has been printed in a buffer.
+  # Used by the Hooks::Print hook
+  class PrintedLine
+    def initialize(buffer, date, tags, displayed, highlight, prefix, message)
+      @buffer, @date, @tags, @displayed, @highlight = buffer, date, tags, displayed, highlight
+      @prefix, @message = prefix, message
+    end
+
+    # @return [Buffer] The buffer the line was printed on
+    attr_reader :buffer
+    # @return [Time] The date the line was printed
+    attr_reader :date
+    # @return [Array<String>] The tags the line has TODO what is this?
+    attr_reader :tags
+    # @return [Boolean] True if line was displayed, false if it was filtered
+    attr_reader :displayed
+    # @return [Boolean] Whether the line was highlighted
+    attr_reader :highlight
+
+    # @return [String] The prefix of the message TODO give example
+    attr_reader :prefix
+
+    # @return [String] The message text
+    attr_reader :message
+  end
+
+  # Contains the callback for linking with the low level ruby api
+  # No need to call these methods manually
   module Helper
+    # low level Callback method used for commands
     def command_callback(id, buffer, args)
       Weechat::Command.find_by_id(id).call(Weechat::Buffer.from_ptr(buffer), args)
     end
 
+    # low level Callback used for running commands
     def command_run_callback(id, buffer, command)
       Weechat::Hooks::CommandRunHook.find_by_id(id).call(Weechat::Buffer.from_ptr(buffer), command)
     end
 
+    # low level Timer callback
     def timer_callback(id, remaining)
       Weechat::Timer.find_by_id(id).call(remaining.to_i)
     end
 
+    # low level buffer input callback
     def input_callback(method, buffer, input)
       Weechat::Buffer.call_input_callback(method, buffer, input)
     end
 
+    # low level buffer close callback
     def close_callback(method, buffer)
       Weechat::Buffer.call_close_callback(method, buffer)
     end
 
+    # low level bar build callback
     def bar_build_callback(id, item, window)
       Weechat::Bar::Item.call_build_callback(id, window)
     end
 
+    # low level info callback
     def info_callback(id, info, arguments)
       Weechat::Info.find_by_id(id).call(arguments).to_s
     end
 
+    # low level print callback
     def print_callback(id, buffer, date, tags, displayed, highlight, prefix, message)
       buffer    = Weechat::Buffer.from_ptr(buffer)
       date      = Time.at(date.to_i)
       tags      = tags.split(",")
       displayed = Weechat.integer_to_bool(displayed)
       highlight = Weechat.integer_to_bool(highlight)
-      Weechat::Hooks::Print.find_by_id(id).call(buffer, date, tags, displayed, highlight, prefix, message)
+      line = PrintedLine.new(buffer, date, tags, displayed, highlight, prefix, message)
+      Weechat::Hooks::Print.find_by_id(id).call(line)
     end
+
+    private
 
     # TODO add IRC parser
     # TODO add support for filters
@@ -64,18 +105,23 @@ module Weechat
       [/irc_server_(connecting|connected|disconnected)/] => lambda { |v| Weechat::Server.from_name(v) },
       [/weechat_(highlight|pv)/] => lambda { |v| Weechat::Line.parse(v) },
       [/window_(scrolled|unzooming|unzoomed|zooming|zoomed)/] => lambda { |v| Weechat::Window.from_ptr(v) },
+      [/irc_(raw_)?((in)|(out))/] => lambda { |v| Weechat::IRC::Message.parse_message(v) },
       ["irc_ctcp"] => lambda { |v| Weechat::IRC::Message.new(v) },
     }
+    public
 
+    # low level callback for signal hooks
     def signal_callback(id, signal, data)
       data = Weechat::Utilities.apply_transformation(signal, data, SignalCallbackTransformations)
       Weechat::Hooks::Signal.find_by_id(id).call(signal, data)
     end
 
+    # low level config callback
     def config_callback(id, option, value)
       ret = Weechat::Hooks::Config.find_by_id(id).call(option, value)
     end
 
+    # low level process callback
     def process_callback(id, command, code, stdout, stderr)
       code = case code
              when Weechat::WEECHAT_HOOK_PROCESS_RUNNING
@@ -97,12 +143,13 @@ module Weechat
       end
     end
 
+    private
     ModifierCallbackTransformations = {
       [/^irc_(in|out)_.+$/] => lambda { |v| Weechat::IRC::Server.from_name(v) },
       ['irc_color_decode', 'irc_color_encode'] => lambda { |v| Weechat.integer_to_bool(v) },
       [/^bar_condition_.+$/]                   => lambda { |v| Weechat::Window.from_ptr(v) },
       ["input_text_content", "input_text_display",
-       "input_text_display_with_cursor"]       => lambda { |v| Weechat::Buffer.from_ptr(v) },
+       "input_text_display_with_cursor", "history_add"]       => lambda { |v| Weechat::Buffer.from_ptr(v) },
       ["weechat_print"]                        => lambda { |v|
         parts = v.split(";")
         parts[0] = Weechat::Plugin.find(parts[0])
@@ -119,7 +166,9 @@ module Weechat
     ModifierCallbackRTransformations = {
       [/^bar_condition_.+$/] => lambda { |v| Weechat.bool_to_integer(v) },
     }
+    public
 
+    # low level modifier hook callback
     def modifier_callback(id, modifier, modifier_data, s)
       classes = Weechat::Hook.hook_classes
       modifier_data = Weechat::Utilities.apply_transformation(modifier, modifier_data, ModifierCallbackTransformations)
@@ -268,6 +317,8 @@ require 'weechat/command.rb'
 require 'weechat/modifier.rb'
 require 'weechat/input.rb'
 require 'weechat/buffer.rb'
+require 'weechat/custom_buffer.rb'
+require 'weechat/custom_free_content_buffer.rb'
 require 'weechat/window.rb'
 require 'weechat/bar.rb'
 require 'weechat/irc/server.rb'

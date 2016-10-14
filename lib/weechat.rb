@@ -51,7 +51,7 @@ module Weechat
 
     # low level Callback used for running commands
     def command_run_callback(id, buffer, command)
-      Weechat::Hooks::CommandRunHook.find_by_id(id).call(Weechat::Buffer.from_ptr(buffer), command)
+      Weechat::Hooks::CommandRun.find_by_id(id).call(Weechat::Buffer.from_ptr(buffer), command)
     end
 
     # low level Timer callback
